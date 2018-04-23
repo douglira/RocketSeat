@@ -1,4 +1,4 @@
-#Sun Apr 01 21:24:50 BRT 2018
-base.0=/home/douglas/developer/react-native/rocketseat/minicurso/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
+#Sat Apr 14 00:29:36 BRT 2018
+base.0=/home/douglas/developer/rocketseat/minicurso-gonative/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
 renamed.0=classes.dex
-file.0=/home/douglas/developer/react-native/rocketseat/minicurso/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex
+file.0=/home/douglas/developer/rocketseat/minicurso-gonative/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex

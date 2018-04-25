@@ -1,0 +1,36 @@
+{
+  "name": "githuber",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "prop-types": "^15.6.1",
+    "react": "16.3.1",
+    "react-native": "0.55.3",
+    "react-native-vector-icons": "^4.6.0",
+    "react-navigation": "^1.5.11"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "babel-jest": "22.4.3",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "babel-preset-react-native": "4.0.0",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-import-resolver-babel-module": "^4.0.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
+    "eslint-plugin-react-native": "^3.2.1",
+    "jest": "22.4.3",
+    "react-test-renderer": "16.3.1",
+    "reactotron-react-native": "^1.14.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

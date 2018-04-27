@@ -1,19 +1,18 @@
-$(document).ready(function() {
+$(document).ready(() => {
   /**
    * Alerts
    */
-  setTimeout(function() {
-    var alert = document.querySelector('.alert');
+  setTimeout(() => {
+    const alert = document.querySelector('.alert');
 
-    if (alert)
-      alert.className += ' alert-hidden';
+    if (alert) { alert.className += ' alert-hidden'; }
   }, 3000);
 
   /**
    * MDE Editor
    */
-  $('.mde').each(function() {
-    var simplemde = new SimpleMDE({
+  $('.mde').each(function () {
+    const simplemde = new SimpleMDE({
       element: this,
       spellChecker: false,
       status: false,
@@ -24,19 +23,19 @@ $(document).ready(function() {
   /**
    * Modals
    */
-  $('[data-modal-open]').click(function(event) {
+  $('[data-modal-open]').click(function (event) {
     event.preventDefault();
 
     $($(this).data('modal-open')).addClass('active');
   });
 
-  $('[data-modal-close]').click(function(event) {
+  $('[data-modal-close]').click(function (event) {
     event.preventDefault();
 
     $($(this).data('modal-close')).removeClass('active');
   });
 
-  $(document).keydown(function(e) {
+  $(document).keydown((e) => {
     e = e || window.event;
     if (e.keyCode == 27) {
       $('.modal').removeClass('active');

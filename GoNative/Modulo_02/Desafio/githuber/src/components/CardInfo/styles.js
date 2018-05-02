@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
 
   avatar: {
     ...general.avatarImage,
+    borderRadius: 50,
   },
 
   infoContainer: {
@@ -24,13 +25,13 @@ const styles = StyleSheet.create({
     marginLeft: metrics.baseMargin,
   },
 
-  infoRepo: {
+  infoTitle: {
     fontSize: 16,
     color: colors.darker,
     fontWeight: 'bold',
   },
 
-  infoOrg: {
+  infoSubtitle: {
     fontSize: 12,
     color: colors.regular,
   },

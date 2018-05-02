@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
   loading: {
     margin: metrics.baseMargin,
   },
+
+  emptyText: {
+    color: colors.regular,
+  },
 });
 
 export default styles;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Text,
   View,
   TextInput,
   TouchableOpacity,
@@ -10,12 +11,13 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 
+import CardInfo from 'components/CardInfo';
+
 import api from 'services/axios';
 
 import { colors } from 'styles';
 import styles from './styles';
 
-import RepositoryItem from './components/RepositoryItem';
 
 class Lista extends Component {
   static propTypes = {
@@ -34,6 +36,7 @@ class Lista extends Component {
   };
 
   componentDidMount() {
+    // AsyncStorage.clear();
     this.loadRepositories();
   }
 
@@ -44,7 +47,7 @@ class Lista extends Component {
     data = JSON.parse(data);
 
     this.setState({
-      data: data.reverse(),
+      data: data && data.length > 0 ? data.reverse() : [],
       loading: false,
       refreshing: false,
     });
@@ -62,8 +65,8 @@ class Lista extends Component {
     if (repos && repos.length > 0) {
       repos.push({
         id: data.id,
-        name: data.name,
-        organization: data.organization.login,
+        title: data.name,
+        subtitle: data.organization.login,
         avatar: data.organization.avatar_url,
       });
 
@@ -78,8 +81,8 @@ class Lista extends Component {
       JSON.stringify([
         {
           id: data.id,
-          name: data.name,
-          organization: data.organization.login,
+          title: data.name,
+          subtitle: data.organization.login,
           avatar: data.organization.avatar_url,
         },
       ]),
@@ -89,16 +92,18 @@ class Lista extends Component {
   };
 
   renderListItem = ({ item }) =>
-    <RepositoryItem repository={item} navigation={this.props.navigation} />;
+    <CardInfo information={item} navigation={this.props.navigation} />;
 
   renderList = () => (
-    <FlatList
-      data={this.state.data}
-      keyExtractor={item => String(item.id)}
-      renderItem={this.renderListItem}
-      onRefresh={this.loadRepositories}
-      refreshing={this.state.refreshing}
-    />
+    this.state.data.length > 0
+      ? <FlatList
+        data={this.state.data}
+        keyExtractor={item => String(item.id)}
+        renderItem={this.renderListItem}
+        onRefresh={this.loadRepositories}
+        refreshing={this.state.refreshing}
+      />
+      : <Text style={styles.emptyText}>Não há repositórios a serem exibidos.</Text>
   );
 
   render() {

@@ -6,12 +6,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { colors } from 'styles';
 import styles from './styles';
 
-class RepositoryItem extends Component {
+class CardInfo extends Component {
   static propTypes = {
-    repository: PropTypes.shape({
+    information: PropTypes.shape({
       avatar: PropTypes.string,
-      name: PropTypes.string,
-      organization: PropTypes.string,
+      title: PropTypes.string,
+      subtitle: PropTypes.string,
     }).isRequired,
     navigation: PropTypes.shape({
       navigate: PropTypes.func,
@@ -19,19 +19,19 @@ class RepositoryItem extends Component {
   };
 
   showIssues = () => {
-    const { repository } = this.props;
+    const { information } = this.props;
 
-    this.props.navigation.navigate('Issues', { repository });
+    this.props.navigation.navigate('Issues', { information });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
-          <Image style={styles.avatar} source={{ uri: this.props.repository.avatar }} />
+          <Image style={styles.avatar} source={{ uri: this.props.information.avatar }} />
           <View style={styles.description}>
-            <Text style={styles.infoRepo}>{this.props.repository.name}</Text>
-            <Text style={styles.infoOrg}>{this.props.repository.organization}</Text>
+            <Text style={styles.infoTitle}>{this.props.information.title}</Text>
+            <Text style={styles.infoSubtitle}>{this.props.information.subtitle}</Text>
           </View>
         </View>
         <TouchableOpacity style={styles.iconContainer} onPress={this.showIssues}>
@@ -42,4 +42,4 @@ class RepositoryItem extends Component {
   }
 }
 
-export default RepositoryItem;
+export default CardInfo;

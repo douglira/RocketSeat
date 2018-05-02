@@ -21,7 +21,7 @@ class RepositoryItem extends Component {
   showIssues = () => {
     const { repository } = this.props;
 
-    this.props.navigation.navigate('All', { repository });
+    this.props.navigation.navigate('Issues', { repository });
   }
 
   render() {

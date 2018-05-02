@@ -3,18 +3,18 @@ import { View, Text } from 'react-native';
 
 import TabTitle from 'components/TabTitle';
 
-class All extends Component {
+class Closed extends Component {
   static navigationOptions = {
-    tabBarLabel: ({ focused }) => <TabTitle title="Todas" focused={focused} />,
+    tabBarLabel: ({ focused }) => <TabTitle title="Fechadas" focused={focused} />,
   };
 
   render() {
     return (
       <View>
-        <Text>All issues...</Text>
+        <Text>Closed issues...</Text>
       </View>
     );
   }
 }
 
-export default All;
+export default Closed;

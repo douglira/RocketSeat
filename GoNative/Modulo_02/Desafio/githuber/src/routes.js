@@ -2,6 +2,8 @@ import { StackNavigator, TabNavigator } from 'react-navigation';
 
 import Repositories from 'screens/Repositories';
 import All from 'screens/Issues/tabs/All';
+import Open from 'screens/Issues/tabs/Open';
+import Closed from 'screens/Issues/tabs/Closed';
 
 import { colors, metrics } from './styles';
 
@@ -11,17 +13,14 @@ const AppNavigator = StackNavigator(
     Issues: TabNavigator(
       {
         All: { screen: All },
+        Open: { screen: Open },
+        Closed: { screen: Closed },
       },
       {
         initialRouteName: 'All',
-        navigationOptions: ({ navigation }) => {
-          const { name } = navigation.getParam('repository');
-          return {
-            title: name,
-          };
-        },
         tabBarOptions: {
           upperCaseLabel: false,
+          inactiveTintColor: colors.whiteTransparent,
           indicatorStyle: {
             backgroundColor: colors.light,
           },
@@ -39,13 +38,21 @@ const AppNavigator = StackNavigator(
     ),
   },
   {
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor: colors.white,
-      },
-      headerTitleStyle: {
-        color: colors.darker,
-      },
+    navigationOptions: ({ navigation }) => {
+      let name = 'GitIssues';
+      if (navigation.state.params) {
+        ({ name } = navigation.state.params.repository);
+      }
+
+      return {
+        headerTitle: name,
+        headerStyle: {
+          backgroundColor: colors.white,
+        },
+        headerTitleStyle: {
+          color: colors.darker,
+        },
+      };
     },
   },
 );

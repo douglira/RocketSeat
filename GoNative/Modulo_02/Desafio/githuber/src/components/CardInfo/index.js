@@ -30,7 +30,11 @@ class CardInfo extends Component {
         <View style={styles.infoContainer}>
           <Image style={styles.avatar} source={{ uri: this.props.information.avatar }} />
           <View style={styles.description}>
-            <Text style={styles.infoTitle}>{this.props.information.title}</Text>
+            <Text style={styles.infoTitle}>
+              {this.props.information.title.length > 25
+                ? `${this.props.information.title.substring(0, 25)}...`
+                : this.props.information.title }
+            </Text>
             <Text style={styles.infoSubtitle}>{this.props.information.subtitle}</Text>
           </View>
         </View>

@@ -1,4 +1,5 @@
 import { StackNavigator, TabNavigator } from 'react-navigation';
+import { AsyncStorage } from 'react-native';
 
 import Repositories from 'screens/Repositories';
 import All from 'screens/Issues/tabs/All';
@@ -7,7 +8,7 @@ import Closed from 'screens/Issues/tabs/Closed';
 
 import { colors, metrics } from './styles';
 
-const AppNavigator = StackNavigator(
+const appNavigator = filterHistory => StackNavigator(
   {
     Repositories: { screen: Repositories },
     Issues: TabNavigator(
@@ -17,7 +18,7 @@ const AppNavigator = StackNavigator(
         Closed: { screen: Closed },
       },
       {
-        initialRouteName: 'All',
+        initialRouteName: filterHistory,
         tabBarOptions: {
           upperCaseLabel: false,
           inactiveTintColor: colors.whiteTransparent,
@@ -44,6 +45,12 @@ const AppNavigator = StackNavigator(
         ({ name } = navigation.state.params);
       }
 
+      if (navigation.state.routes && navigation.state.routes.length > 0) {
+        const { index } = navigation.state;
+        const { routeName } = navigation.state.routes[index];
+        AsyncStorage.setItem('@Githuber:filterHistory', routeName);
+      }
+
       return {
         headerTitle: name,
         headerStyle: {
@@ -57,4 +64,4 @@ const AppNavigator = StackNavigator(
   },
 );
 
-export default AppNavigator;
+export default appNavigator;

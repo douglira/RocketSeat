@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 
 import TabTitle from 'components/TabTitle';
@@ -34,22 +34,28 @@ class Open extends Component {
   loadIssues = async () => {
     this.setState({ refreshing: true });
 
-    const { information } = this.props.navigation.state.params;
-    const response = await api.get(`/repos/${information.subtitle}/${information.title}/issues`);
+    const { name, organization } = this.props.navigation.state.params;
+    const response = await api.get(`/repos/${organization}/${name}/issues`);
 
     response.data = response.data.filter(issue => issue.state === 'open');
     const data = response.data.map(issue => ({
       id: issue.id,
       title: issue.title,
-      subtitle: issue.user.login,
+      user: issue.user.login,
       avatar: issue.user.avatar_url,
+      url: issue.html_url,
     }));
 
     this.setState({ data, loading: false, refreshing: false });
   };
 
   renderListItem = ({ item }) =>
-    <CardInfo information={item} navigation={this.props.navigation} />;
+    (<CardInfo
+      title={item.title}
+      subtitle={item.user}
+      avatar={item.avatar}
+      onPress={() => Linking.openURL(item.url)}
+    />)
 
   renderList = () => (
     this.state.data.length > 0

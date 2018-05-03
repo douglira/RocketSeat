@@ -39,13 +39,13 @@ const AppNavigator = StackNavigator(
   },
   {
     navigationOptions: ({ navigation }) => {
-      let title = 'GitIssues';
+      let name = 'GitIssues';
       if (navigation.state.params) {
-        ({ title } = navigation.state.params.information);
+        ({ name } = navigation.state.params);
       }
 
       return {
-        headerTitle: title,
+        headerTitle: name,
         headerStyle: {
           backgroundColor: colors.white,
         },

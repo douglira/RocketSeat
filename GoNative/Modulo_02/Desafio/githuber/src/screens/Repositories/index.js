@@ -21,7 +21,9 @@ import styles from './styles';
 
 class Lista extends Component {
   static propTypes = {
-    navigation: PropTypes.shape({}).isRequired,
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func,
+    }).isRequired,
   }
 
   static navigationOptions = {
@@ -65,8 +67,8 @@ class Lista extends Component {
     if (repos && repos.length > 0) {
       repos.push({
         id: data.id,
-        title: data.name,
-        subtitle: data.organization.login,
+        name: data.name,
+        organization: data.organization.login,
         avatar: data.organization.avatar_url,
       });
 
@@ -81,8 +83,8 @@ class Lista extends Component {
       JSON.stringify([
         {
           id: data.id,
-          title: data.name,
-          subtitle: data.organization.login,
+          name: data.name,
+          organization: data.organization.login,
           avatar: data.organization.avatar_url,
         },
       ]),
@@ -91,8 +93,17 @@ class Lista extends Component {
     this.setState({ searchText: '' });
   };
 
+  showIssues = ({ name, organization }) => {
+    this.props.navigation.navigate('Issues', { name, organization });
+  }
+
   renderListItem = ({ item }) =>
-    <CardInfo information={item} navigation={this.props.navigation} />;
+    (<CardInfo
+      avatar={item.avatar}
+      title={item.name}
+      subtitle={item.organization}
+      onPress={() => this.showIssues({ name: item.name, organization: item.organization })}
+    />)
 
   renderList = () => (
     this.state.data.length > 0

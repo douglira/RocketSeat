@@ -1,9 +1,20 @@
-import { call, put } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import api from 'services/axios';
 
-export function* addFavoriteRequest(action) {
-  const response = yield call(api.get, `/repos/${action.payload.repoName}`);
+import { Types as FavoritesTypes } from 'store/ducks/favorites';
 
-  console.tron.log(response);
-  yield put({ type: 'ADD_FAVORITE_SUCCESS', payload: response.data });
+export function* addFavoriteRequest(action) {
+  try {
+    const response = yield call(api.get, `/repos/${action.payload.repoName}`);
+
+    const favorites = yield select(state => state.favorites.data);
+
+    if (favorites.find(favorite => favorite.id === response.data.id)) {
+      yield put({ type: FavoritesTypes.ADD_FAILURE, message: 'Repositório já existe' });
+    } else {
+      yield put({ type: FavoritesTypes.ADD_SUCCESS, favorite: response.data });
+    }
+  } catch (err) {
+    yield put({ type: FavoritesTypes.ADD_FAILURE, message: 'Repositório não existe' });
+  }
 }

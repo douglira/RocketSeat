@@ -14,7 +14,7 @@ buildscript {
 
 allprojects {
     repositories {
-        // mavenLocal()
+        mavenLocal()
         jcenter()
         maven { url "$rootDir/../node_modules/react-native/android" }
         maven { url "https://jitpack.io" }

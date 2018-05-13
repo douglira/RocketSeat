@@ -1,14 +1,16 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Provider } from 'react-redux';
 
 import 'config/ReactotronConfig';
 
-import Map from 'components/Map';
+import store from 'store';
+
+import Map from 'screen/Map';
 
 const App = () => (
-  <View>
+  <Provider store={store}>
     <Map />
-  </View>
+  </Provider>
 );
 
 export default App;

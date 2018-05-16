@@ -16,6 +16,7 @@ const Routes = createStackNavigator({
       borderBottomWidth: 0,
     },
     headerTintColor: colors.white,
+    headerBackTitle: null,
   },
 });
 

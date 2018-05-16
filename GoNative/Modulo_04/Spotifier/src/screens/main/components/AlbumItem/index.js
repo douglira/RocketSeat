@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 
-const AlbumItem = ({ album }) => (
-  <TouchableOpacity style={styles.container} onPress={() => {}}>
+const AlbumItem = ({ album, onPress }) => (
+  <TouchableOpacity style={styles.container} onPress={onPress}>
     <Image style={styles.thumbnail} source={{ uri: album.thumbnail }} />
     <View style={styles.info}>
       <Text style={styles.title}>{album.title}</Text>
@@ -23,6 +23,7 @@ AlbumItem.propTypes = {
     title: PropTypes.string,
     author: PropTypes.string,
   }).isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 export default AlbumItem;

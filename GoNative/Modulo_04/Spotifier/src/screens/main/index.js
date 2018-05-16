@@ -1,33 +1,70 @@
-import React from 'react';
-
-import { View, StatusBar, TouchableOpacity, FlatList } from 'react-native';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { View, StatusBar, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import PropTypes from 'prop-types';
+import { Creators as AlbumsActions } from 'store/ducks/albums';
 
 import styles from './styles';
 
 import AlbumItem from './components/AlbumItem';
 
-import server from '../../../server.json';
+class Main extends Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: 'Sua biblioteca',
+    headerRight: (
+      <TouchableOpacity style={styles.headerRight} onPress={() => navigation.navigate('Search')}>
+        <Icon name="search" size={24} color="#FFF" />
+      </TouchableOpacity>
+    ),
+  });
 
-const Main = () => (
-  <View style={styles.container}>
-    <StatusBar barStyle="light-content" />
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func,
+    }).isRequired,
+    getAlbumsRequest: PropTypes.func.isRequired,
+    albums: PropTypes.shape({
+      loading: PropTypes.bool,
+      data: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number,
+      })),
+    }).isRequired,
+  };
 
-    <FlatList
-      data={server.albums}
-      keyExtractor={album => String(album.id)}
-      renderItem={({ item }) => <AlbumItem album={item} />}
-    />
-  </View>
-);
+  componentDidMount() {
+    this.props.getAlbumsRequest();
+  }
 
-Main.navigationOptions = ({ navigation }) => ({
-  title: 'Sua biblioteca',
-  headerRight: (
-    <TouchableOpacity style={styles.headerRight} onPress={() => navigation.navigate('Search')}>
-      <Icon name="search" size={24} color="#FFF" />
-    </TouchableOpacity>
-  ),
+  render() {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+
+        {this.props.albums.loading ? (
+          <ActivityIndicator size="small" color="#999" style={styles.loading} />
+        ) : (
+          <FlatList
+            data={this.props.albums.data}
+            keyExtractor={album => String(album.id)}
+            renderItem={({ item }) => (
+              <AlbumItem
+                onPress={() => this.props.navigation.navigate('Album', { album: item })}
+                album={item}
+              />
+            )}
+          />
+        )}
+      </View>
+    );
+  }
+}
+
+const mapStateToProps = ({ albums }) => ({
+  albums,
 });
 
-export default Main;
+const mapDispatchToProps = dispatch => bindActionCreators(AlbumsActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

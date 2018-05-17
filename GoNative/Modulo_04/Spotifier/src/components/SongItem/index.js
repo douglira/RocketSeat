@@ -1,13 +1,19 @@
 import React from 'react';
-
 import { View, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
+import { Creators as PlayerActions } from 'store/ducks/player';
 
 import styles from './styles';
 
-const SongItem = ({ song }) => (
-  <TouchableOpacity onPress={() => {}}>
+const SongItem = ({ song, setSongRequest }) => (
+  <TouchableOpacity
+    onPress={() => {
+      setSongRequest(song);
+    }}
+  >
     <View style={styles.container}>
       <View style={styles.info}>
         <Text style={styles.title}>{song.title}</Text>
@@ -23,6 +29,13 @@ SongItem.propTypes = {
     title: PropTypes.string,
     author: PropTypes.string,
   }).isRequired,
+  setSongRequest: PropTypes.func.isRequired,
 };
 
-export default SongItem;
+const mapStateToProps = ({ player }) => ({
+  player,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(PlayerActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(SongItem);

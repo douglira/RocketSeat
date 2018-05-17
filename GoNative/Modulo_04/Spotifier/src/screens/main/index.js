@@ -12,7 +12,7 @@ import AlbumItem from './components/AlbumItem';
 
 class Main extends Component {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Sua biblioteca',
+    title: 'Sua Biblioteca',
     headerRight: (
       <TouchableOpacity style={styles.headerRight} onPress={() => navigation.navigate('Search')}>
         <Icon name="search" size={24} color="#FFF" />

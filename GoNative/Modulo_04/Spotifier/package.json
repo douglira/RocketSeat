@@ -9,10 +9,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "json-server": "^0.12.2",
+    "lodash": "^4.17.10",
     "prop-types": "^15.6.1",
     "react": "16.3.1",
     "react-native": "0.55.4",
     "react-native-iphone-x-helper": "^1.0.3",
+    "react-native-sound": "diego3g/react-native-sound",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^2.0.1",
     "react-redux": "^5.0.7",

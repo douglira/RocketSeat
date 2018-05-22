@@ -21,6 +21,34 @@ StatusBar.setBarStyle("light-content");
 const author = "Douglas Lira";
 
 class Chat extends Component {
+  componentDidMount() {
+    this.props.conversation.subscribeToMore({
+      document: gql`
+        subscription onMessageAdded($author: String!) {
+          Message(
+            filter: { mutation_in: [CREATED], node: { from_not: $author } }
+          ) {
+            node {
+              id
+              from
+              text
+            }
+          }
+        }
+      `,
+      variables: {
+        author
+      },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data["Message"]) return prev;
+
+        const newItem = subscriptionData.data["Message"].node;
+
+        return { ...prev, allMessages: [...prev.allMessages, newItem] };
+      }
+    });
+  }
+
   componentDidUpdate() {
     setTimeout(() => {
       this._scrollView.scrollToEnd({ animated: false });

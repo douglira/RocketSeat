@@ -8,8 +8,23 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  gender: {
+    type: String,
+    required: true,
+    enum: ['male', 'female'],
+  },
   birthday: {
     type: Date,
+  },
+  city: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  country: {
+    type: String,
+    required: true,
   },
   email: {
     type: String,
@@ -21,9 +36,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 4,
+    select: false,
   },
-  friends: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-  friendsRequest: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  friendsRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
   createdAt: {
     type: Date,
     default: Date.now,
@@ -44,6 +61,27 @@ UserSchema.methods = {
   generateToken() {
     return jwt.sign({ id: this.id }, authConfig.secret, { expiresIn: authConfig.expireTokenTime });
   },
+};
+
+UserSchema.statics.getFeedPosts = function (id) {
+  return this.findById(id)
+    .select(['posts', 'friends'])
+    .populate({
+      path: 'posts',
+      options: {
+        limit: 15,
+      },
+    })
+    .populate({
+      path: 'friends',
+      select: 'posts',
+      populate: {
+        path: 'posts',
+        options: {
+          limit: 15,
+        },
+      },
+    });
 };
 
 mongoose.model('User', UserSchema);

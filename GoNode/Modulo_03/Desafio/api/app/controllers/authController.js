@@ -11,7 +11,7 @@ module.exports = {
         return res.status(400).json({ error: 'Credentials not provided' });
       }
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).select('+password');
 
       if (!user) {
         return res.status(400).json({ error: 'User not found' });
@@ -20,6 +20,8 @@ module.exports = {
       if (!(await user.compareHash(password))) {
         return res.status(400).json({ error: 'Invalid password' });
       }
+
+      user.password = undefined;
 
       return res.json({
         user,

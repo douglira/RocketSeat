@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const authConfig = require('../../config/auth');
 
 const UserSchema = new mongoose.Schema({
+  avatar_url: {
+    type: String,
+  },
   name: {
     type: String,
     required: true,
@@ -41,6 +45,13 @@ const UserSchema = new mongoose.Schema({
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendsRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  passwordResetToken: {
+    type: String,
+    uppercase: true,
+  },
+  passwordResetExpiresIn: {
+    type: Date,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -61,6 +72,18 @@ UserSchema.methods = {
   generateToken() {
     return jwt.sign({ id: this.id }, authConfig.secret, { expiresIn: authConfig.expireTokenTime });
   },
+
+  resetPass() {
+    const token = crypto
+      .randomBytes(16)
+      .toString('hex')
+      .toUpperCase();
+    const expiresIn = new Date();
+    expiresIn.setMinutes(expiresIn.getMinutes() + 10);
+
+    this.passwordResetToken = token;
+    this.passwordResetExpiresIn = expiresIn;
+  },
 };
 
 UserSchema.statics.getFeedPosts = function (id) {
@@ -71,6 +94,10 @@ UserSchema.statics.getFeedPosts = function (id) {
       options: {
         limit: 15,
       },
+      populate: {
+        path: 'author',
+        select: 'name',
+      },
     })
     .populate({
       path: 'friends',
@@ -79,6 +106,10 @@ UserSchema.statics.getFeedPosts = function (id) {
         path: 'posts',
         options: {
           limit: 15,
+        },
+        populate: {
+          path: 'author',
+          select: 'name',
         },
       },
     });

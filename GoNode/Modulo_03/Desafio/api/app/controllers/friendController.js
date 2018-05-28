@@ -3,13 +3,19 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
 module.exports = {
-  async friendRequest(req, res, next) {
+  async request(req, res, next) {
     try {
-      if (req.params.id === req.userId) {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.json(400).json({ error: 'Parameter is missing' });
+      }
+
+      if (id === req.userId) {
         return res.status(400).json({ error: 'You can not add yourself' });
       }
 
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(id);
 
       if (!user) {
         return res.status(400).json({ error: "User doesn't exist" });
@@ -42,13 +48,55 @@ module.exports = {
     }
   },
 
+  async decline(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.json(400).json({ error: 'Parameter is missing' });
+      }
+
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(400).json({ error: 'User not found' });
+      }
+
+      if (user.friendsRequest.indexOf(req.userId) !== -1) {
+        user.friendsRequest.splice(user.friendsRequest.indexOf(req.userId), 1);
+        user.save();
+
+        return res.json({ message: 'Friend request successfully canceled' });
+      }
+
+      const me = await User.findById(req.userId);
+
+      if (me.friendsRequest.indexOf(id) !== -1) {
+        me.friendsRequest.splice(me.friendsRequest.indexOf(id), 1);
+        me.save();
+
+        return res.json({ error: 'Friend request successfully declined' });
+      }
+
+      return res.status(400).json({ error: 'There is nothing to be changed' });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
   async add(req, res, next) {
     try {
-      if (req.params.id === req.userId) {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.json(400).json({ error: 'Parameter is missing' });
+      }
+
+      if (id === req.userId) {
         return res.status(400).json({ error: 'You can not add yourself' });
       }
 
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(id);
 
       if (!user) {
         return res.status(400).json({ error: "User doesn't exist" });
@@ -72,6 +120,41 @@ module.exports = {
       await user.save();
 
       return res.json(me);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async remove(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.json(400).json({ error: 'Parameter is missing' });
+      }
+
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(400).json({ error: "User doesn't exist" });
+      }
+
+      const indexMe = user.friends.indexOf(req.userId);
+
+      if (indexMe === -1) {
+        return res
+          .status(400)
+          .json({ error: 'You can only remove the relationship unless both are friends' });
+      }
+
+      user.friends.splice(indexMe, 1);
+      await user.save();
+
+      const me = await User.findById(req.userId);
+      me.friends.splice(me.friends.indexOf(id), 1);
+      await me.save();
+
+      return res.json();
     } catch (err) {
       return next(err);
     }

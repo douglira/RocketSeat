@@ -13,6 +13,8 @@ const controllers = requireDir('./controllers');
  */
 routes.post('/signin', controllers.authController.signin);
 routes.post('/signup', controllers.authController.signup);
+routes.post('/forgot_pass', controllers.authController.forgotPass);
+routes.post('/reset_pass', controllers.authController.resetPass);
 routes.use(authMiddleware);
 
 /**
@@ -24,17 +26,28 @@ routes.put('/user/password', controllers.userController.updatePassword);
 /**
  * Friend
  */
-routes.post('/user/:id/friend/request', controllers.friendController.friendRequest);
-routes.post('/user/:id/friend/add', controllers.friendController.add);
+routes.post('/friend/:id/request', controllers.friendController.request);
+routes.put('/friend/:id/request/decline', controllers.friendController.decline);
+routes.post('/friend/:id', controllers.friendController.add);
+routes.delete('/friend/:id', controllers.friendController.remove);
 
 /**
  * Post
  */
-routes.post('/user/posts', controllers.postController.create);
-routes.get('/user/posts', controllers.postController.feed);
-routes.put('/user/posts/:id', controllers.postController.update);
-routes.delete('/user/posts/:id', controllers.postController.destroy);
+routes.post('/posts', controllers.postController.create);
+routes.get('/posts', controllers.postController.feed);
+routes.put('/posts/:id', controllers.postController.update);
+routes.delete('/posts/:id', controllers.postController.destroy);
+routes.put('/posts/:id/like', controllers.postController.toggleLike);
 
+/**
+ * Comment
+ */
+routes.post('/post/:id/comment', controllers.commentController.create);
+routes.get('/post/:id/comments', controllers.commentController.feedByPost);
+routes.put('/post/:id/comment', controllers.commentController.update);
+routes.delete('/post/:id/comment', controllers.commentController.destroy);
+routes.put('/post/comment/:id/like', controllers.commentController.toggleLike);
 /**
  * Error
  */

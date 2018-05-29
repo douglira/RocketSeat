@@ -19,7 +19,7 @@ module.exports = {
         return res.status(400).json({ error: 'User not found' });
       }
 
-      if (!(await user.compareHash(password))) {
+      if (!(await user.checkPassword(password))) {
         return res.status(400).json({ error: 'Invalid password' });
       }
 

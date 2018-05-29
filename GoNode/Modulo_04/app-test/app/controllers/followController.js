@@ -24,6 +24,7 @@ module.exports = {
 
       return res.json(me);
     } catch (err) {
+      /* istanbul ignore next */
       return next(err);
     }
   },
@@ -51,6 +52,7 @@ module.exports = {
 
       return res.json(me);
     } catch (err) {
+      /* istanbul ignore next */
       return next(err);
     }
   },

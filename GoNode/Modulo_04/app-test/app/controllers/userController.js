@@ -18,6 +18,7 @@ module.exports = {
         followingCount: user.following.length,
       });
     } catch (err) {
+      /* istanbul ignore next */
       return next(err);
     }
   },
@@ -43,6 +44,7 @@ module.exports = {
 
       return res.json(user);
     } catch (err) {
+      /* istanbul ignore next */
       return next(err);
     }
   },

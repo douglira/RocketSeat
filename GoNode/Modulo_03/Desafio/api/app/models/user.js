@@ -65,7 +65,7 @@ UserSchema.pre('save', async function hashPassword(next) {
 });
 
 UserSchema.methods = {
-  compareHash(password) {
+  checkPassword(password) {
     return bcrypt.compare(password, this.password);
   },
 

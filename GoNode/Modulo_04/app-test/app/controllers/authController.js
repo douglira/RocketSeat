@@ -23,6 +23,7 @@ module.exports = {
         token: await user.generateToken(),
       });
     } catch (err) {
+      /* istanbul ignore next */
       return next(err);
     }
   },
@@ -38,7 +39,7 @@ module.exports = {
       const user = await User.create(req.body);
 
       sendMail({
-        from: 'Douglas Lira <douglas.vclira@gmail.com>',
+        from: 'Test Example <test@example.com>',
         to: user.email,
         subject: `Bem-vindo ao RocketTwitter, ${user.name}`,
         template: 'auth/register',
@@ -53,6 +54,7 @@ module.exports = {
         token: await user.generateToken(),
       });
     } catch (err) {
+      /* istanbul ignore next */
       return next(err);
     }
   },

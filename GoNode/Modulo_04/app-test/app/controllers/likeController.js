@@ -23,6 +23,7 @@ module.exports = {
 
       return res.json(tweet);
     } catch (err) {
+      /* istanbul ignore next */
       return next(err);
     }
   },

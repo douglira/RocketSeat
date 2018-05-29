@@ -27,7 +27,7 @@ module.exports = {
 
       const user = await User.findById(req.userId).select('+password');
 
-      if (!(await user.compareHash(oldPassword))) {
+      if (!(await user.checkPassword(oldPassword))) {
         return res.status(400).json({ error: 'Invalid password' });
       }
 

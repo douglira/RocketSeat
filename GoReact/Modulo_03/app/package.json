@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
+    "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-redux": "^5.0.7",
@@ -10,7 +12,9 @@
     "react-scripts": "1.1.4",
     "reactotron-react-js": "^1.13.0",
     "reactotron-redux": "^1.13.0",
-    "redux": "^4.0.0"
+    "reactotron-redux-saga": "^1.13.0",
+    "redux": "^4.0.0",
+    "redux-saga": "^0.16.0"
   },
   "scripts": {
     "start": "react-scripts start",

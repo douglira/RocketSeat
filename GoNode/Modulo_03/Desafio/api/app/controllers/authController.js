@@ -24,11 +24,9 @@ module.exports = {
       }
 
       user.password = undefined;
+      const token = await user.generateToken();
 
-      return res.json({
-        user,
-        token: await user.generateToken(),
-      });
+      return res.cookie('token', token, { maxAge: 86400, httpOnly: true }).json({ user });
     } catch (err) {
       return next(err);
     }
@@ -47,11 +45,11 @@ module.exports = {
       }
 
       const user = await User.create(req.body);
-
-      return res.status(201).json({
-        user,
-        token: await user.generateToken(),
-      });
+      const token = await user.generateToken();
+      return res
+        .status(201)
+        .cookie('token', token, { maxAge: 86400, httpOnly: true })
+        .json({ user });
     } catch (err) {
       return next(err);
     }

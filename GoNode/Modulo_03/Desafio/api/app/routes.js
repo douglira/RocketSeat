@@ -15,8 +15,8 @@ routes.post('/signin', controllers.authController.signin);
 routes.post('/signup', controllers.authController.signup);
 routes.post('/forgot_pass', controllers.authController.forgotPass);
 routes.post('/reset_pass', controllers.authController.resetPass);
-routes.use(authMiddleware);
-
+routes.use(authMiddleware.authenticate);
+routes.all('/check_authentication', authMiddleware.verifyAuthentication);
 /**
  * User
  */

@@ -1,18 +1,16 @@
-import React, { Component } from "react";
-import io from "socket.io-client";
+import React from 'react';
+import { Provider } from 'react-redux';
 
-class App extends Component {
-  componentDidMount() {
-    const socket = io("http://127.0.0.1:3001");
-  }
+import 'config/reactotron';
+import Routes from 'routes';
+import store from 'store';
 
-  render() {
-    return (
-      <div>
-        <p>Bem vindo ao Facerocket</p>
-      </div>
-    );
-  }
-}
+const App = () => (
+  <div>
+    <Provider store={store}>
+      <Routes />
+    </Provider>
+  </div>
+);
 
 export default App;

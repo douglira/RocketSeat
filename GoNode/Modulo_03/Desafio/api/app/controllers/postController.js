@@ -8,13 +8,19 @@ const Comment = mongoose.model('Comment');
 module.exports = {
   async create(req, res, next) {
     try {
+      if (!req.body.content.length) {
+        return res.status(401).json({ error: 'Empty content' });
+      }
+
       const post = await Post.create({ ...req.body, author: req.userId });
       const user = await User.findById(req.userId);
 
       user.posts.push(post.id);
       await user.save();
 
-      return res.status(201).json(post);
+      const fullPost = await Post.getFull(post.id);
+
+      return res.status(201).json(fullPost);
     } catch (err) {
       return next();
     }

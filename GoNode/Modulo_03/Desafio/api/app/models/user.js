@@ -7,6 +7,7 @@ const authConfig = require('../../config/auth');
 const UserSchema = new mongoose.Schema({
   avatar_url: {
     type: String,
+    default: 'http://localhost:3001/default-user.png',
   },
   name: {
     type: String,
@@ -96,7 +97,7 @@ UserSchema.statics.getFeedPosts = function (id) {
       },
       populate: {
         path: 'author',
-        select: 'name',
+        select: ['name', 'avatar_url'],
       },
     })
     .populate({
@@ -109,7 +110,7 @@ UserSchema.statics.getFeedPosts = function (id) {
         },
         populate: {
           path: 'author',
-          select: 'name',
+          select: ['name', 'avatar_url'],
         },
       },
     });

@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
-import { api } from 'services/api';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as UserActions } from 'store/ducks/user';
+
+import { Container, Header } from './styles';
 
 class SignIn extends Component {
   static propTypes = {
-    history: PropTypes.shape({
-      replace: PropTypes.func,
-    }).isRequired,
+    signinRequest: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -17,36 +22,50 @@ class SignIn extends Component {
 
   handleSignIn = async (e) => {
     e.preventDefault();
-    const { emailInput, passwordInput } = this.state;
+    const { emailInput: email, passwordInput: password } = this.state;
 
-    try {
-      const response = await api.post('/signin', { email: emailInput, password: passwordInput });
-      console.log('user', response);
-      this.props.history.replace('/');
-    } catch (err) {
-      // console.log(err.response);
-    }
+    this.props.signinRequest({ email, password });
   };
 
   render() {
+    const { isAuthenticated, loading } = this.props;
+
+    if (loading) {
+      return null;
+    }
+
+    if (isAuthenticated) {
+      return <Redirect to="/" />;
+    }
+
     return (
-      <form onSubmit={this.handleSignIn}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={this.state.emailInput}
-          onChange={e => this.setState({ emailInput: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={this.state.passwordInput}
-          onChange={e => this.setState({ passwordInput: e.target.value })}
-        />
-        <button type="submit">Entrar</button>
-      </form>
+      <Container>
+        <Header>Facerocket</Header>
+        <form onSubmit={this.handleSignIn}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={this.state.emailInput}
+            onChange={e => this.setState({ emailInput: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            value={this.state.passwordInput}
+            onChange={e => this.setState({ passwordInput: e.target.value })}
+          />
+          <button type="submit">Entrar</button>
+        </form>
+      </Container>
     );
   }
 }
 
-export default SignIn;
+const mapStateToProps = ({ user }) => ({
+  isAuthenticated: user.isAuthenticated,
+  loading: user.loading,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(UserActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

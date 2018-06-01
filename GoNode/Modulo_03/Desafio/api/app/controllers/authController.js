@@ -26,7 +26,7 @@ module.exports = {
       user.password = undefined;
       const token = await user.generateToken();
 
-      return res.cookie('token', token, { maxAge: 86400, httpOnly: true }).json({ user });
+      return res.cookie('token', token, { maxAge: 900000, httpOnly: true }).json({ user });
     } catch (err) {
       return next(err);
     }
@@ -127,6 +127,26 @@ module.exports = {
       await user.save();
 
       return res.json();
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async verifyAuthentication(req, res, next) {
+    try {
+      const { userId: id } = req;
+
+      if (!id) {
+        return res.status(401).json({ error: 'You are not authorized' });
+      }
+
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(400).json({ error: 'User not found' });
+      }
+
+      return res.json({ user });
     } catch (err) {
       return next(err);
     }

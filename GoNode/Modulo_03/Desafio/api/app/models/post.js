@@ -15,4 +15,11 @@ const PostSchema = new mongoose.Schema({
   },
 });
 
+PostSchema.statics.getFull = function (id) {
+  return this.findById(id).populate({
+    path: 'author',
+    select: ['name', 'avatar_url'],
+  });
+};
+
 mongoose.model('Post', PostSchema);

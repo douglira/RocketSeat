@@ -2,30 +2,27 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const authConfig = require('../../config/auth');
 
-module.exports = {
-  authenticate: async (req, res, next) => {
-    const { token } = req.cookies;
+module.exports = async (req, res, next) => {
+  // ---------------------- Cookie Authentication -------------------------
+  const { token } = req.cookies;
 
-    console.log(req);
+  if (!token) {
+    return res.status(401).json({ error: 'Token not provided' });
+  }
 
-    if (!token) {
-      return res.status(401).json({ error: 'Token not provided' });
-    }
+  try {
+    const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
-    try {
-      const decoded = await promisify(jwt.verify)(token, authConfig.secret);
+    req.userId = decoded.id;
 
-      req.userId = decoded.id;
-
-      return next();
-    } catch (err) {
-      res.clearCookie('token');
-      return next(err);
-    }
-  },
-
-  verifyAuthentication: (req, res) => res.json(),
+    return next();
+  } catch (err) {
+    res.clearCookie('token');
+    return next(err);
+  }
 };
+
+// ---------------------- Bearer Authentication -------------------------
 
 // module.exports = async (req, res, next) => {
 //   console.log(req.cookies);

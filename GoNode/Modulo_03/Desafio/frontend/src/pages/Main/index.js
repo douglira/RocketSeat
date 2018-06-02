@@ -7,31 +7,19 @@ import { Creators as PostsActions } from 'store/ducks/posts';
 import { socket } from 'services/api';
 
 import PostItem from 'components/PostItem';
+import Header from 'components/Header';
 
-import { Container, MainContainer, Header } from './styles';
+import { Container, MainContainer } from './styles';
 
 class Main extends Component {
   static propTypes = {
-    addPost: PropTypes.func.isRequired,
     realtimeAddPost: PropTypes.func.isRequired,
     realtimeReplacePost: PropTypes.func.isRequired,
     realtimeDeletePost: PropTypes.func.isRequired,
     postsRequest: PropTypes.func.isRequired,
-    user: PropTypes.shape({
-      data: PropTypes.shape({
-        avatar_url: PropTypes.string,
-        name: PropTypes.string,
-      }),
-    }).isRequired,
-    posts: PropTypes.shape({
-      data: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-      })),
-    }).isRequired,
-  };
-
-  state = {
-    postInput: '',
+    posts: PropTypes.arrayOf(PropTypes.shape({
+      postId: PropTypes.string,
+    })).isRequired,
   };
 
   componentDidMount() {
@@ -40,9 +28,8 @@ class Main extends Component {
       this.props.realtimeAddPost(data);
       // console.log(data);
     });
-    socket.on('posts.replace', (data) => {
+    socket.on('posts.edit', (data) => {
       this.props.realtimeReplacePost(data);
-      // console.log(data);
     });
     socket.on('posts.delete', (data) => {
       this.props.realtimeDeletePost(data);
@@ -50,37 +37,14 @@ class Main extends Component {
     });
   }
 
-  handleAddPost = (e) => {
-    e.preventDefault();
-
-    if (!this.state.postInput) return;
-
-    this.props.addPost(this.state.postInput);
-
-    this.setState({ postInput: '' });
-  };
-
-  renderPosts = () => this.props.posts.data.map(post => <PostItem key={post._id} post={post} />);
+  renderPosts = () =>
+    this.props.posts.map(item => <PostItem key={item.postId} postId={item.postId} />);
 
   render() {
     return (
       <Container>
         <MainContainer>
-          <Header>
-            <div>
-              <img src={this.props.user.data.avatar_url} alt={this.props.user.data.name} />
-              <p>{this.props.user.data.name}</p>
-            </div>
-            <form onSubmit={this.handleAddPost}>
-              <textarea
-                placeholder="No que está pensando?"
-                value={this.state.postInput}
-                onChange={e => this.setState({ postInput: e.target.value })}
-                draggable={false}
-              />
-              <button type="submit">Publicar</button>
-            </form>
-          </Header>
+          <Header />
           {this.renderPosts()}
         </MainContainer>
       </Container>
@@ -90,9 +54,10 @@ class Main extends Component {
 
 const mapStateToProps = ({ user, posts }) => ({
   user,
-  posts,
+  posts: posts.data.map(post => ({ postId: post._id })),
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(PostsActions, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(PostsActions, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

@@ -2,6 +2,7 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import { api } from 'services/api';
 
 import { Types as UserTypes, Creators as UserActions } from 'store/ducks/user';
+import { Creators as NotificationActions } from 'store/ducks/notification';
 
 function* authentication(action) {
   try {
@@ -17,10 +18,11 @@ function* authentication(action) {
   } catch (err) {
     if (err.response.data && err.response.data.error) {
       yield put(UserActions.unauthorized(err.response.data.error));
+      yield put(NotificationActions.pushNotification(err.response.data.error));
       return;
     }
 
-    yield put(UserActions.unauthorized('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
   }
 }
 

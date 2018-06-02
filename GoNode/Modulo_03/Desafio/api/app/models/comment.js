@@ -14,4 +14,8 @@ const CommentSchema = new mongoose.Schema({
   },
 });
 
+CommentSchema.index({ author: 1 });
+CommentSchema.index({ likes: 1 });
+CommentSchema.index({ post: -1 });
+
 mongoose.model('Comment', CommentSchema);

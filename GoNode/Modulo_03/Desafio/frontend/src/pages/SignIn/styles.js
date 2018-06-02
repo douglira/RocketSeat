@@ -41,6 +41,7 @@ export const Container = styled.div`
       border: 0;
       background: #15d8a5;
       font-size: 16px;
+      font-weight: bold
       cursor: pointer;
     }
   }
@@ -55,6 +56,6 @@ export const Header = styled.header`
   max-width: 350px;
   font-size: 48px;
   word-spacing: 2px;
-  color: #8b2607;
+  color: #4124b1;
   padding: 15px 0;
 `;

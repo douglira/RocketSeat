@@ -15,6 +15,10 @@ const PostSchema = new mongoose.Schema({
   },
 });
 
+PostSchema.index({ author: 1 });
+PostSchema.index({ likes: 1 });
+PostSchema.index({ comments: -1 });
+
 PostSchema.statics.getFull = function (id) {
   return this.findById(id).populate({
     path: 'author',

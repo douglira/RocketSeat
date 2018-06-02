@@ -59,6 +59,10 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+UserSchema.index({ email: 1 });
+UserSchema.index({ friends: 1 });
+UserSchema.index({ email: 1, password: 1 });
+
 UserSchema.pre('save', async function hashPassword(next) {
   if (!this.isModified('password')) next();
 

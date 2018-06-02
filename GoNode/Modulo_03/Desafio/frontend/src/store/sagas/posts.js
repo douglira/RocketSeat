@@ -32,7 +32,22 @@ function* add(action) {
   }
 }
 
+function* toggleLike(action) {
+  try {
+    const { postId } = action.payload;
+
+    yield call(api.put, `/posts/${postId}/like`);
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(PostsActions.toggleLikeFailure(err.response.data.error));
+    }
+
+    yield put(PostsActions.toggleLikeFailure('Unexpected error. Try again later'));
+  }
+}
+
 export default function* rootPosts() {
   yield takeLatest(PostsTypes.POSTS_REQUEST, getAll);
   yield takeLatest(PostsTypes.POST_ADD_REQUEST, add);
+  yield takeLatest(PostsTypes.TOGGLE_LIKE_REQUEST, toggleLike);
 }

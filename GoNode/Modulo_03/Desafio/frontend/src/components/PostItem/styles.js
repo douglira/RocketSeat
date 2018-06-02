@@ -9,6 +9,7 @@ export const Post = styled.div`
   background: #e1e1e1;
   padding: 10px;
   box-sizing: border-box;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 
   div {
     display: flex;
@@ -36,5 +37,36 @@ export const Post = styled.div`
     font-weight: 300;
     font-size: 14px;
     color: #333;
+    padding-bottom: 5px;
+  }
+`;
+
+export const PostInteractions = styled.div`
+  display: flex;
+  align-items: flex-end;
+  padding: 5px 0;
+  border-top: 0.75px solid #bbb;
+
+  button {
+    border: 0;
+    display: flex;
+    align-items: flex-start;
+    color: #666;
+    font-weight: 300;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+    margin-top: 5px;
+    background-color: inherit;
+
+    span {
+      margin-right: 5px;
+      align-self: flex-end;
+    }
+
+    i {
+      font-size: 20px;
+      color: inherit;
+    }
   }
 `;

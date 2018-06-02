@@ -10,6 +10,9 @@ export const Types = {
   POST_ADD_REQUEST: 'post/POST_ADD',
   POST_ADD_SUCCESS: 'post/POST_ADD_SUCCESS',
   POST_ADD_FAILURE: 'post/POST_ADD_FAILURE',
+
+  TOGGLE_LIKE_REQUEST: 'post/TOGGLE_LIKE_REQUEST',
+  TOGGLE_LIKE_FAILURE: 'post/TOGGLE_LIKE_FAILURE',
 };
 
 export const Creators = {
@@ -54,6 +57,16 @@ export const Creators = {
 
   addPostFailure: error => ({
     type: Types.POST_ADD_FAILURE,
+    payload: { error },
+  }),
+
+  toggleLikeRequest: postId => ({
+    type: Types.TOGGLE_LIKE_REQUEST,
+    payload: { postId },
+  }),
+
+  toggleLikeFailure: error => ({
+    type: Types.TOGGLE_LIKE_FAILURE,
     payload: { error },
   }),
 };
@@ -108,6 +121,11 @@ export default function postsReducer(state = INITIAL_STATE, action) {
     case Types.POST_ADD_SUCCESS:
       return { data: [action.payload.fullPost, ...state.data], loading: false, error: null };
     case Types.POST_ADD_FAILURE:
+      return { ...state, loading: false, error: action.payload.error };
+
+    case Types.TOGGLE_LIKE_REQUEST:
+      return { ...state, loading: true };
+    case Types.TOGGLE_LIKE_FAILURE:
       return { ...state, loading: false, error: action.payload.error };
     default:
       return state;

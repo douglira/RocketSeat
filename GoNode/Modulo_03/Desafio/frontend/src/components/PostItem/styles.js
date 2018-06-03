@@ -5,7 +5,7 @@ export const Post = styled.div`
   flex-direction: column;
   align-self: stretch;
   margin: 20px 0;
-  border-radius: 10px;
+  border-radius: 6px;
   background: #e1e1e1;
   padding: 10px;
   box-sizing: border-box;
@@ -29,6 +29,8 @@ export const Post = styled.div`
       margin-left: 10px;
       display: flex;
       align-items: center;
+      margin-bottom: 0;
+      padding: 0;
     }
   }
 
@@ -46,10 +48,12 @@ export const PostInteractions = styled.div`
   align-items: flex-end;
   padding: 5px 0;
   border-top: 0.75px solid #bbb;
+  margin-bottom: 0 !important;
 
   button {
     border: 0;
     display: flex;
+    align-self: flex-start;
     align-items: flex-start;
     color: #666;
     font-weight: 300;
@@ -66,7 +70,11 @@ export const PostInteractions = styled.div`
 
     i {
       font-size: 20px;
-      color: inherit;
+      color: #8d70ff;
+
+      &:hover {
+        color: #5d4ba5;
+      }
     }
   }
 `;

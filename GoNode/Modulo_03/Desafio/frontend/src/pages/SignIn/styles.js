@@ -25,7 +25,7 @@ export const Container = styled.div`
     }
 
     input {
-      padding: 20px;
+      padding: 10px 20px;
       color: #333;
       margin-bottom: 15px;
       border-radius: 3px;
@@ -35,7 +35,7 @@ export const Container = styled.div`
     }
 
     button {
-      padding: 20px;
+      padding: 10px 20px;
       color: #fff;
       border-radius: 3px;
       border: 0;

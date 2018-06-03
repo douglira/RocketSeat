@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link, Route, withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as PostsActions } from 'store/ducks/posts';
 import { socket } from 'services/api';
 
-import PostItem from 'components/PostItem';
 import Header from 'components/Header';
 
-import { Container, MainContainer } from './styles';
+import PostList from 'pages/PostList';
+import Profile from 'pages/Profile';
+
+import { Container, MainContainer, Navegation } from './styles';
 
 class Main extends Component {
   static propTypes = {
@@ -17,9 +20,7 @@ class Main extends Component {
     realtimeReplacePost: PropTypes.func.isRequired,
     realtimeDeletePost: PropTypes.func.isRequired,
     postsRequest: PropTypes.func.isRequired,
-    posts: PropTypes.arrayOf(PropTypes.shape({
-      postId: PropTypes.string,
-    })).isRequired,
+    location: PropTypes.shape({}).isRequired,
   };
 
   componentDidMount() {
@@ -37,27 +38,39 @@ class Main extends Component {
     });
   }
 
-  renderPosts = () =>
-    this.props.posts.map(item => <PostItem key={item.postId} postId={item.postId} />);
-
   render() {
     return (
       <Container>
         <MainContainer>
-          <Header />
-          {this.renderPosts()}
+          <Header location={this.props.location} />
+          <Navegation>
+            <ul>
+              <li>
+                <Link to="/">Feed</Link>
+              </li>
+              <li>
+                <Link to="/profile">Meu perfil</Link>
+              </li>
+              <li>
+                <Link to="/">Amigos</Link>
+              </li>
+              <li>
+                <Link to="/">Pesquisar</Link>
+              </li>
+            </ul>
+          </Navegation>
+          <Route path="/app" component={PostList} />
+          <Route path="/profile" component={Profile} />
         </MainContainer>
       </Container>
     );
   }
 }
 
-const mapStateToProps = ({ user, posts }) => ({
+const mapStateToProps = ({ user }) => ({
   user,
-  posts: posts.data.map(post => ({ postId: post._id })),
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(PostsActions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(PostsActions, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));

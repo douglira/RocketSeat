@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,6 +13,11 @@ class SignIn extends Component {
     signinRequest: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        pathname: PropTypes.string,
+      }),
+    }).isRequired,
   };
 
   state = {
@@ -29,13 +34,14 @@ class SignIn extends Component {
 
   render() {
     const { isAuthenticated, loading } = this.props;
+    const { from } = this.props.location.state || { from: { pathname: '/app' } };
 
     if (loading) {
       return null;
     }
 
     if (isAuthenticated) {
-      return <Redirect to="/" />;
+      return <Redirect to={from} />;
     }
 
     return (
@@ -68,4 +74,4 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(UserActions, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SignIn));

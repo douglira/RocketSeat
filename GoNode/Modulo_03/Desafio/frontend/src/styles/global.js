@@ -2,6 +2,8 @@ import { injectGlobal } from 'styled-components';
 
 import 'font-awesome/css/font-awesome.css';
 
+import 'antd/dist/antd.css';
+
 injectGlobal`
   * {
     margin: 0;

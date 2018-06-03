@@ -12,7 +12,9 @@ const Notification = ({ notification }) => (
         ? { opacity: 0.75, animation: `${Animations.bounceIn} 1.1s both` }
         : {
             opacity: 0,
-            animation: `${Animations.scaleOut} 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both`,
+            animation: notification.text
+              ? `${Animations.scaleOut} 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both`
+              : '',
           }
     }
   >

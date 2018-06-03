@@ -6,6 +6,7 @@ export const Container = styled.div`
   border-bottom: 0.85px solid #ddd;
   height: auto;
   padding-bottom: 20px;
+  justify-content: center;
 
   div {
     display: flex;

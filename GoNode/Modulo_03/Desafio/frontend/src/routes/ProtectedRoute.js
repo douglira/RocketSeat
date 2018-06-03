@@ -8,7 +8,7 @@ import { Creators as UserActions } from 'store/ducks/user';
 
 class ProtectedRoute extends Component {
   static propTypes = {
-    component: PropTypes.func.isRequired,
+    render: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     checkAuth: PropTypes.func.isRequired,
   };
@@ -18,14 +18,14 @@ class ProtectedRoute extends Component {
   }
 
   render() {
-    const { component: ProtectedComponent, isAuthenticated, ...props } = this.props;
+    const { render, isAuthenticated, ...props } = this.props;
 
     return (
       <Route
         {...props}
         render={routerProps =>
           (isAuthenticated ? (
-            <ProtectedComponent {...routerProps} />
+            render(props)
           ) : (
             <Redirect
               to={{

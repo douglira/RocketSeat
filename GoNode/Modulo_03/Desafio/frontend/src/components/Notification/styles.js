@@ -83,5 +83,6 @@ export const Container = styled.div`
   p {
     color: #fff;
     font-size: 14px;
+    margin: 0 !important;
   }
 `;

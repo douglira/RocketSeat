@@ -7,12 +7,24 @@ export const Types = {
   REALTIME_REPLACE: 'post/REALTIME_REPLACE',
   REALTIME_DELETE: 'post/REALTIME_DELETE',
 
-  POST_ADD_REQUEST: 'post/POST_ADD',
+  POST_ADD_REQUEST: 'post/POST_ADD_REQUEST',
   POST_ADD_SUCCESS: 'post/POST_ADD_SUCCESS',
   POST_ADD_FAILURE: 'post/POST_ADD_FAILURE',
 
+  POST_EDIT_REQUEST: 'post/POST_EDIT_REQUEST',
+  POST_EDIT_SUCCESS: 'post/POST_EDIT_SUCCESS',
+  POST_EDIT_FAILURE: 'post/POST_EDIT_FAILURE',
+
+  POST_DELETE_REQUEST: 'post/POST_DELETE_REQUEST',
+  POST_DELETE_SUCCESS: 'post/POST_EDIT_SUCCESS',
+  POST_DELETE_FAILURE: 'post/POST_DELETE_FAILURE',
+
   TOGGLE_LIKE_REQUEST: 'post/TOGGLE_LIKE_REQUEST',
   TOGGLE_LIKE_FAILURE: 'post/TOGGLE_LIKE_FAILURE',
+
+  NEW_COMMENT_REQUEST: 'post/NEW_COMMENT_REQUEST',
+  NEW_COMMENT_SUCCESS: 'post/NEW_COMMENT_SUCCESS',
+  NEW_COMMENT_FAILURE: 'post/NEW_COMMENT_FAILURE',
 };
 
 export const Creators = {
@@ -60,6 +72,26 @@ export const Creators = {
     payload: { error },
   }),
 
+  editPostRequest: post => ({
+    type: Types.POST_EDIT_REQUEST,
+    payload: { ...post },
+  }),
+
+  editPostFailure: error => ({
+    type: Types.POST_EDIT_FAILURE,
+    payload: { error },
+  }),
+
+  deletePostRequest: postId => ({
+    type: Types.POST_DELETE_REQUEST,
+    payload: { postId },
+  }),
+
+  deletePostFailure: error => ({
+    type: Types.POST_DELETE_FAILURE,
+    payload: { error },
+  }),
+
   toggleLikeRequest: postId => ({
     type: Types.TOGGLE_LIKE_REQUEST,
     payload: { postId },
@@ -69,11 +101,21 @@ export const Creators = {
     type: Types.TOGGLE_LIKE_FAILURE,
     payload: { error },
   }),
+
+  newCommentRequest: comment => ({
+    type: Types.NEW_COMMENT_REQUEST,
+    payload: { ...comment },
+  }),
+
+  newCommentFailure: error => ({
+    type: Types.NEW_COMMENT_FAILURE,
+    payload: { error },
+  }),
 };
 
 const INITIAL_STATE = {
   data: [],
-  loading: false,
+  loading: { status: false, topic: '' },
   error: null,
 };
 
@@ -82,9 +124,12 @@ function realtimeReplacePost(state, action) {
   const { data } = state;
 
   const index = data.findIndex(postState => postState._id === post._id);
-  data.splice(index, 1, post);
+  if (index !== -1) {
+    data.splice(index, 1, post);
+    return { ...state, data };
+  }
 
-  return { ...state, data };
+  return state;
 }
 
 function realtimeDeletePost(state, action) {
@@ -103,11 +148,19 @@ function realtimeDeletePost(state, action) {
 export default function postsReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.POSTS_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: { status: true, topic: 'posts.request' } };
     case Types.POSTS_SUCCESS:
-      return { data: action.payload.posts, loading: false, error: null };
+      return {
+        data: action.payload.posts,
+        loading: { status: false, topic: 'posts.request' },
+        error: null,
+      };
     case Types.POSTS_FAILURE:
-      return { ...state, loading: false, error: action.payload.error };
+      return {
+        ...state,
+        loading: { status: false, topic: 'posts.request' },
+        error: action.payload.error,
+      };
 
     case Types.REALTIME_ADD:
       return { ...state, data: [action.payload.post, ...state.data] };
@@ -117,16 +170,44 @@ export default function postsReducer(state = INITIAL_STATE, action) {
       return realtimeDeletePost(state, action);
 
     case Types.POST_ADD_REQUEST:
-      return { ...state, loading: true };
-    case Types.POST_ADD_SUCCESS:
-      return { data: [action.payload.fullPost, ...state.data], loading: false, error: null };
+      return { ...state, loading: { status: true, topic: 'post.add' } };
     case Types.POST_ADD_FAILURE:
-      return { ...state, loading: false, error: action.payload.error };
+      return {
+        ...state,
+        loading: { status: false, topic: 'post.add' },
+        error: action.payload.error,
+      };
 
-    case Types.TOGGLE_LIKE_REQUEST:
-      return { ...state, loading: true };
+    case Types.POST_EDIT_REQUEST:
+      return { ...state, loading: { status: true, topic: 'post.edit' } };
+    case Types.POST_EDIT_FAILURE:
+      return {
+        ...state,
+        loading: { status: false, topic: 'post.edit' },
+        error: action.payload.error,
+      };
+
+    case Types.POST_DELETE_REQUEST:
+      return { ...state, loading: { status: true, topic: 'post.delete' } };
+    case Types.POST_DELETE_FAILURE:
+      return {
+        ...state,
+        loading: { status: false, topic: 'post.delete' },
+        error: action.payload.error,
+      };
+
     case Types.TOGGLE_LIKE_FAILURE:
-      return { ...state, loading: false, error: action.payload.error };
+      return {
+        ...state,
+        loading: { status: false, topic: 'post.toggleLike' },
+        error: action.payload.error,
+      };
+    case Types.NEW_COMMENT_FAILURE:
+      return {
+        ...state,
+        loading: { status: false, topic: 'post.newComment' },
+        error: action.payload.error,
+      };
     default:
       return state;
   }

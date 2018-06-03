@@ -17,17 +17,17 @@ class Header extends Component {
   };
 
   state = {
-    postInput: '',
-  }
+    inputPost: '',
+  };
 
   handleAddPost = (e) => {
     e.preventDefault();
 
-    if (!this.state.postInput) return;
+    if (!this.state.inputPost) return;
 
-    this.props.addPost(this.state.postInput);
+    this.props.addPost(this.state.inputPost);
 
-    this.setState({ postInput: '' });
+    this.setState({ inputPost: '' });
   };
 
   render() {
@@ -40,8 +40,8 @@ class Header extends Component {
         <form onSubmit={this.handleAddPost}>
           <textarea
             placeholder="No que está pensando?"
-            value={this.state.postInput}
-            onChange={e => this.setState({ postInput: e.target.value })}
+            value={this.state.inputPost}
+            onChange={e => this.setState({ inputPost: e.target.value })}
             draggable={false}
           />
           <button type="submit">Publicar</button>
@@ -55,7 +55,6 @@ const mapStateToProps = state => ({
   user: state.user.data,
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(PostActions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(PostActions, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

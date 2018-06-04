@@ -12,7 +12,6 @@ class SignIn extends Component {
   static propTypes = {
     signinRequest: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
-    loading: PropTypes.bool.isRequired,
     location: PropTypes.shape({
       state: PropTypes.shape({
         pathname: PropTypes.string,
@@ -21,27 +20,30 @@ class SignIn extends Component {
   };
 
   state = {
-    emailInput: '',
-    passwordInput: '',
+    form: {
+      email: '',
+      password: '',
+    },
   };
 
   handleSignIn = async (e) => {
     e.preventDefault();
-    const { emailInput: email, passwordInput: password } = this.state;
 
-    this.props.signinRequest({ email, password });
+    this.props.signinRequest({ ...this.state.form });
+  };
+
+  handleChange = fieldname => (event) => {
+    const form = { ...this.state.form };
+    form[fieldname] = event.target.value;
+    this.setState({ form });
   };
 
   render() {
-    const { isAuthenticated, loading } = this.props;
+    const { isAuthenticated } = this.props;
     const { from } = this.props.location.state || { from: { pathname: '/app' } };
 
-    if (loading) {
-      return null;
-    }
-
     if (isAuthenticated) {
-      return <Redirect to={from} />;
+      return <Redirect to={from.pathname} />;
     }
 
     return (
@@ -51,14 +53,14 @@ class SignIn extends Component {
           <input
             type="email"
             placeholder="Email"
-            value={this.state.emailInput}
-            onChange={e => this.setState({ emailInput: e.target.value })}
+            value={this.state.form.email}
+            onChange={this.handleChange('email')}
           />
           <input
             type="password"
             placeholder="Senha"
-            value={this.state.passwordInput}
-            onChange={e => this.setState({ passwordInput: e.target.value })}
+            value={this.state.form.password}
+            onChange={this.handleChange('password')}
           />
           <button type="submit">Entrar</button>
         </form>

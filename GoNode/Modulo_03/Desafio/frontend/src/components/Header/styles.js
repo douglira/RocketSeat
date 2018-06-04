@@ -2,11 +2,63 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  box-sizing: border-box;
+  flex-direction: column;
   border-bottom: 0.85px solid #ddd;
-  height: auto;
   padding-bottom: 20px;
+
+  nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    button {
+      border: 0;
+      color: #666;
+      font-weight: 300;
+      margin-left: 10px;
+      padding: 10px;
+      background-color: inherit;
+      position: relative;
+
+      span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0px;
+        right: 7px;
+        font-size: 12px;
+        height: 15px;
+        width: 15px;
+        border-radius: 15px;
+        background: #ef5350;
+        color: #f9f9f9;
+        font-weight: bold;
+      }
+
+      i {
+        font-size: 20px;
+        color: #8d70ff;
+        cursor: pointer;
+      }
+
+      &:hover > i {
+        color: #5d4ba5;
+      }
+
+      &:hover > span {
+        background: #e4413d;
+      }
+    }
+  }
+`;
+
+export const ContainerInfo = styled.div`
+  display: flex;
+  box-sizing: border-box;
   justify-content: center;
+  height: auto;
 
   div {
     display: flex;

@@ -8,8 +8,6 @@ const io = require('socket.io')(server);
 
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const socketCookieParser = require('socket.io-cookie-parser');
 const mongoose = require('mongoose');
 const requireDir = require('require-dir');
 
@@ -21,14 +19,11 @@ mongoose.connect(url, options);
 requireDir(modelsPath);
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static('./uploads'));
 
 app.use('/api', require('./app/routes'));
 
 server.listen(port, () => console.log(`Server running at port ${port}`));
-
-io.use(socketCookieParser());
 
 require('./app/socket')(io);

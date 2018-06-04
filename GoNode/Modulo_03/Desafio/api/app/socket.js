@@ -8,16 +8,16 @@ const User = mongoose.model('User');
 
 module.exports = (io) => {
   io.use(async (socket, next) => {
-    const { token } = socket.client.request.cookies;
+    const { token } = socket.handshake.query;
+
     if (!token) {
-      return next(new Error('Unauthorized'));
+      return new Error('Not authorized');
     }
 
     try {
       const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
-      /* eslint-disable */
-      socket.client.userId = decoded.id;
+      socket.client.userId = decoded.user._id;
 
       return next();
     } catch (err) {
@@ -25,16 +25,16 @@ module.exports = (io) => {
     }
   });
 
-  io.on('connection', socket => {
+  io.on('connection', (socket) => {
     if (socket.client.userId) {
-      Post.watch().on('change', async function(data) {
+      Post.watch().on('change', async (data) => {
         if (data.operationType === 'delete') {
           socket.emit('posts.delete', data.documentKey);
           return;
         }
 
         let type = data.operationType;
-        let fullPost = await Post.getFull(data.documentKey);
+        const fullPost = await Post.getFull(data.documentKey);
 
         if (type === 'update' || type === 'replace') {
           type = 'edit';
@@ -45,12 +45,11 @@ module.exports = (io) => {
           return;
         }
 
-        let me = await User.findById(socket.client.userId);
-        let isFriend = me.friends.indexOf(fullPost.author._id);
+        const me = await User.findById(socket.client.userId);
+        const isFriend = me.friends.indexOf(fullPost.author._id);
 
         if (isFriend !== -1) {
           socket.emit(`posts.${type}`, fullPost);
-          return;
         }
       });
     }

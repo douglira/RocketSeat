@@ -11,6 +11,26 @@ const api = axios.create({
 
 const socket = io(apiURL, {
   secure: true,
+  query: {
+    token: localStorage.getItem('access_token'),
+  },
 });
+
+api.interceptors.request.use(
+  (req) => {
+    const token = localStorage.getItem('access_token');
+
+    if (token) {
+      const scheme = `Bearer ${token}`;
+      req.headers.authorization = scheme;
+      return req;
+    }
+    return req;
+  },
+  (err) => {
+    console.log('ERROR_AXIOS_INTERCEPTOR', err);
+    return Promise.reject(err);
+  },
+);
 
 export { api, socket };

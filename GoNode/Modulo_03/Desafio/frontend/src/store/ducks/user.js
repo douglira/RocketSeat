@@ -3,6 +3,8 @@ export const Types = {
   SIGNIN_REQUEST: 'user/SIGNIN_REQUEST',
   AUTHORIZED: 'user/AUTHORIZED',
   UNAUTHORIZED: 'user/UNAUTHORIZED',
+  SIGNOUT_REQUEST: 'user/SIGNOUT_REQUEST',
+  SIGNOUT_RESET: 'user/SIGNOUT_RESET',
 };
 
 export const Creators = {
@@ -23,6 +25,15 @@ export const Creators = {
   unauthorized: error => ({
     type: Types.UNAUTHORIZED,
     payload: { error },
+  }),
+
+  signoutRequest: ({ redirect }) => ({
+    type: Types.SIGNOUT_REQUEST,
+    payload: { redirect },
+  }),
+
+  signoutReset: () => ({
+    type: Types.SIGNOUT_RESET,
   }),
 };
 
@@ -53,6 +64,8 @@ export default function userReducer(state = INITIAL_STATE, action) {
         loading: false,
         isAuthenticated: false,
       };
+    case Types.SIGNOUT_RESET:
+      return { ...INITIAL_STATE };
     default:
       return state;
   }

@@ -25,16 +25,17 @@ function* authentication(action) {
 
 function* verify() {
   const token = localStorage.getItem('access_token');
-
   if (token) {
     try {
       const decoded = jwtDecode(token);
       yield put(UserActions.authorized(decoded.user));
     } catch (err) {
+      localStorage.removeItem('access_token');
       yield put(UserActions.unauthorized('User not authorized'));
       yield put(NotificationActions.pushNotification('User not authorized'));
     }
   } else {
+    localStorage.removeItem('access_token');
     yield put(UserActions.unauthorized('User not authorized'));
   }
 }

@@ -20,6 +20,7 @@ routes.use(authMiddleware);
 /**
  * User
  */
+routes.get('/user/profile', controllers.userController.profile);
 routes.put('/user/profile', controllers.userController.updateProfile);
 routes.put('/user/password', controllers.userController.updatePassword);
 
@@ -39,6 +40,7 @@ routes.get('/posts', controllers.postController.feed);
 routes.put('/posts/:id', controllers.postController.update);
 routes.delete('/posts/:id', controllers.postController.destroy);
 routes.put('/posts/:id/like', controllers.postController.toggleLike);
+routes.get('/posts/notifications', controllers.postController.allNotifications);
 
 /**
  * Comment

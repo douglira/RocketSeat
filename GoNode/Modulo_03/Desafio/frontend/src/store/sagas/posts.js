@@ -89,6 +89,16 @@ function* newComment(action) {
   }
 }
 
+function* getAllNotifications() {
+  try {
+    const { data } = yield call(api.get, '/posts/notifications');
+
+    yield put(PostsActions.postsNotificationsSuccess(data));
+  } catch (err) {
+    yield put(NotificationActions.pushNotification('It was not possible to import post notifications'));
+  }
+}
+
 export default function* rootPosts() {
   yield takeLatest(PostsTypes.POSTS_REQUEST, getAll);
   yield takeLatest(PostsTypes.POST_ADD_REQUEST, add);
@@ -96,4 +106,5 @@ export default function* rootPosts() {
   yield takeLatest(PostsTypes.POST_DELETE_REQUEST, destroy);
   yield takeLatest(PostsTypes.TOGGLE_LIKE_REQUEST, toggleLike);
   yield takeLatest(PostsTypes.NEW_COMMENT_REQUEST, newComment);
+  yield takeLatest(PostsTypes.POSTS_NOTIFICATION_REQUEST, getAllNotifications);
 }

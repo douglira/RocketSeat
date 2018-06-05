@@ -46,6 +46,7 @@ const UserSchema = new mongoose.Schema({
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendsRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  postNotifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PostNotification' }],
   passwordResetToken: {
     type: String,
     uppercase: true,
@@ -88,6 +89,16 @@ UserSchema.methods = {
 
     this.passwordResetToken = token;
     this.passwordResetExpiresIn = expiresIn;
+  },
+
+  isFriend(id) {
+    const index = this.friends.indexOf(id);
+    return index !== -1;
+  },
+
+  removeNotification(id) {
+    const index = this.postNotifications.indexOf(id);
+    this.postNotifications.splice(index, 1);
   },
 };
 

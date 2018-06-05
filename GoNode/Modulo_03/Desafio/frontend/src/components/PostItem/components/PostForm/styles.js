@@ -45,7 +45,7 @@ export const Form = styled.form`
     cursor: pointer;
 
     &:hover {
-      background: #e0e0e0;
+      background: #f1f1f1;
     }
   }
 `;

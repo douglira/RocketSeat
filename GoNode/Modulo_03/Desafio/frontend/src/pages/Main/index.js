@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { Creators as PostsActions } from 'store/ducks/posts';
 import { Creators as UserActions } from 'store/ducks/user';
 
-import { socket } from 'services/api';
+import { socketConnect } from 'services/api';
 
 import Header from 'components/Header';
 
@@ -22,6 +22,9 @@ class Main extends Component {
     realtimeReplacePost: PropTypes.func.isRequired,
     realtimeDeletePost: PropTypes.func.isRequired,
     postsRequest: PropTypes.func.isRequired,
+    postsNotificationsRequest: PropTypes.func.isRequired,
+    realtimeAddNotification: PropTypes.func.isRequired,
+    realtimeDeleteNotification: PropTypes.func.isRequired,
     location: PropTypes.shape().isRequired,
     user: PropTypes.shape({
       isAuthenticated: PropTypes.bool,
@@ -30,7 +33,9 @@ class Main extends Component {
 
   componentDidMount() {
     if (this.props.user.isAuthenticated) {
+      const socket = socketConnect();
       this.props.postsRequest();
+      this.props.postsNotificationsRequest();
       socket.on('posts.insert', (data) => {
         this.props.realtimeAddPost(data);
         // console.log(data);
@@ -40,6 +45,13 @@ class Main extends Component {
       });
       socket.on('posts.delete', (data) => {
         this.props.realtimeDeletePost(data);
+        // console.log(data);
+      });
+      socket.on('post.notification.insert', (data) => {
+        this.props.realtimeAddNotification(data);
+      });
+      socket.on('post.notification.delete', (data) => {
+        this.props.realtimeDeleteNotification(data);
         // console.log(data);
       });
     }
@@ -61,18 +73,15 @@ class Main extends Component {
                 <NavLink to="/app">Feed</NavLink>
               </li>
               <li>
-                <NavLink to="/app/profile">Meu perfil</NavLink>
+                <NavLink to={`/app/profile/${user.data._id}`}>Meu perfil</NavLink>
               </li>
               <li>
                 <NavLink to="/app">Amigos</NavLink>
               </li>
-              <li>
-                <NavLink to="/app">Pesquisar</NavLink>
-              </li>
             </ul>
           </Navegation>
           <Route exact path="/app" component={PostList} />
-          <Route path="/app/profile" component={Profile} />
+          <Route path="/app/profile/:id" component={Profile} />
         </MainContainer>
       </Container>
     );
@@ -86,4 +95,7 @@ const mapStateToProps = ({ user }) => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ ...PostsActions, ...UserActions }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Main);

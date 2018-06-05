@@ -10,10 +10,13 @@ import { Creators as UserActions } from 'store/ducks/user';
 
 import { ContainerInfo, Container } from './styles';
 
+import PostNotification from './components/PostNotifications';
+
 class Header extends Component {
   static propTypes = {
     addPost: PropTypes.func.isRequired,
     signoutRequest: PropTypes.func.isRequired,
+    postsNotificationsCount: PropTypes.number.isRequired,
     user: PropTypes.shape({
       avatar_url: PropTypes.string,
       name: PropTypes.string,
@@ -30,8 +33,11 @@ class Header extends Component {
     form: {
       post: '',
     },
-    notifierPosts: false,
-    notifierFriendsRequest: false,
+    tooltipFriendsRequest: false,
+    tooltipPosts: false,
+    tooltipSignout: false,
+    popoverFriendsRequest: false,
+    popoverPosts: false,
   };
 
   handleAddPost = (e) => {
@@ -59,16 +65,20 @@ class Header extends Component {
     this.setState({ form });
   };
 
-  handlePostNotifierClick = (visible) => {
-    this.setState({ notifierPosts: visible });
+  handleTooltipVisible = tooltipName => (visible) => {
+    this.setState({ [tooltipName]: visible });
   };
 
-  handleFriendNotifierClick = (visible) => {
-    this.setState({ notifierFriendsRequest: visible });
+  handlePopoverVisible = popoverName => (visible) => {
+    this.setState({ [popoverName]: visible });
+  };
+
+  handleCloseTootip = tooltipName => () => {
+    this.setState({ [tooltipName]: false });
   };
 
   render() {
-    const { location } = this.props;
+    const { location, postsNotificationsCount } = this.props;
 
     return (
       <Container>
@@ -77,13 +87,16 @@ class Header extends Component {
             content={<p>Silvana Lira</p>}
             title="Solicitações"
             trigger="click"
-            visible={this.state.notifierPosts}
-            onVisibleChange={this.handlePostNotifierClick}
+            visible={this.state.popoverFriendsRequest}
+            onVisibleChange={this.handlePopoverVisible('popoverFriendsRequest')}
             placement="bottomRight"
             arrowPointAtCenter
           >
             <button>
               <Tooltip
+                onClick={this.handleCloseTootip('tooltipFriendsRequest')}
+                onVisibleChange={this.handleTooltipVisible('tooltipFriendsRequest')}
+                visible={this.state.tooltipFriendsRequest}
                 mouseEnterDelay={0.15}
                 placement="bottomRight"
                 arrowPointAtCenter
@@ -95,16 +108,18 @@ class Header extends Component {
             </button>
           </Popover>
           <Popover
-            content={<p>Silvana Lira</p>}
-            title="Suas postagens"
+            content={<PostNotification />}
             trigger="click"
-            visible={this.state.notifierFriendsRequest}
-            onVisibleChange={this.handleFriendNotifierClick}
+            visible={this.state.popoverPosts}
+            onVisibleChange={this.handlePopoverVisible('popoverPosts')}
             placement="bottomRight"
             arrowPointAtCenter
           >
             <button>
               <Tooltip
+                onClick={this.handleCloseTootip('tooltipPosts')}
+                onVisibleChange={this.handleTooltipVisible('tooltipPosts')}
+                visible={this.state.tooltipPosts}
                 mouseEnterDelay={0.15}
                 placement="bottomRight"
                 arrowPointAtCenter
@@ -112,11 +127,19 @@ class Header extends Component {
               >
                 <i className="fa fa-bell-o" />
               </Tooltip>
-              <span>2</span>
+              {postsNotificationsCount > 0 ? <span>{postsNotificationsCount}</span> : null}
             </button>
           </Popover>
           <button onClick={this.handleSignout}>
-            <Tooltip mouseEnterDelay={0.15} placement="bottomRight" arrowPointAtCenter title="Sair">
+            <Tooltip
+              onClick={this.handleCloseTootip('tooltipSignout')}
+              onVisibleChange={this.handleTooltipVisible('tooltipSignout')}
+              visible={this.state.tooltipSignout}
+              mouseEnterDelay={0.15}
+              placement="bottomRight"
+              arrowPointAtCenter
+              title="Sair"
+            >
               <i className="fa fa-sign-out" />
             </Tooltip>
           </button>
@@ -131,7 +154,7 @@ class Header extends Component {
               <textarea
                 placeholder="No que está pensando?"
                 value={this.state.form.post}
-                onChange={this.handleChange}
+                onChange={this.handleChange('post')}
                 draggable={false}
               />
               <button type="submit">Publicar</button>
@@ -145,9 +168,13 @@ class Header extends Component {
 
 const mapStateToProps = state => ({
   user: state.user.data,
+  postsNotificationsCount: state.posts.notifications.length,
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ ...UserActions, ...PostActions }, dispatch);
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Header));

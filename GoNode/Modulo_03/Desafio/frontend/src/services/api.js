@@ -9,13 +9,6 @@ const api = axios.create({
   withCredentials: true,
 });
 
-const socket = io(apiURL, {
-  secure: true,
-  query: {
-    token: localStorage.getItem('access_token'),
-  },
-});
-
 api.interceptors.request.use(
   (req) => {
     const token = localStorage.getItem('access_token');
@@ -33,4 +26,15 @@ api.interceptors.request.use(
   },
 );
 
-export { api, socket };
+const socketConnect = () => {
+  const socket = io(apiURL, {
+    secure: true,
+    query: {
+      token: localStorage.getItem('access_token'),
+    },
+  });
+  socket.connect();
+  return socket;
+};
+
+export { api, socketConnect };

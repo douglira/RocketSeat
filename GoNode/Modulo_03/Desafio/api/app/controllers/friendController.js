@@ -25,7 +25,7 @@ module.exports = {
         return res.status(400).json({ error: "You've already sent a friend request" });
       }
 
-      if (user.friends.indexOf(req.userId) !== -1) {
+      if (user.isFriend(req.userId)) {
         return res.status(400).json({ error: "You're both already friends" });
       }
 

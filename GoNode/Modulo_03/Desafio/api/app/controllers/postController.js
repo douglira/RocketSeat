@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
 const Comment = mongoose.model('Comment');
+const PostNotification = mongoose.model('PostNotification');
 
 module.exports = {
   async create(req, res, next) {
@@ -105,13 +106,50 @@ module.exports = {
         post.likes.splice(like, 1);
         await post.save();
 
+        const notification = await PostNotification.findOne({ post: post.id });
+        const user = await User.findById(notification.to);
+
+        const index = user.postNotifications.indexOf(notification.id);
+        user.postNotifications.splice(index, 1);
+        await notification.remove();
+        await user.save();
+
         return res.json();
       }
 
       post.likes.push(req.userId);
       await post.save();
 
+      const notification = await PostNotification.create({
+        post: post.id,
+        from: req.userId,
+        to: post.author,
+        topic: 'like',
+      });
+      const user = await User.findById(notification.to);
+      console.log(user);
+      user.postNotifications.push(notification.id);
+      await user.save();
+
       return res.json();
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async allNotifications(req, res, next) {
+    try {
+      const user = await User.findById(req.userId)
+        .select('postNotifications')
+        .populate({
+          path: 'postNotifications',
+          populate: {
+            path: 'from',
+            select: ['name', 'avatar_url'],
+          },
+        });
+
+      return res.json(user.postNotifications);
     } catch (err) {
       return next(err);
     }

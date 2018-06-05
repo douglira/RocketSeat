@@ -1,10 +1,16 @@
 export const Types = {
   CHECK_AUTH: 'user/CHECK_AUTH',
+
   SIGNIN_REQUEST: 'user/SIGNIN_REQUEST',
   AUTHORIZED: 'user/AUTHORIZED',
   UNAUTHORIZED: 'user/UNAUTHORIZED',
+
   SIGNOUT_REQUEST: 'user/SIGNOUT_REQUEST',
   SIGNOUT_RESET: 'user/SIGNOUT_RESET',
+
+  USER_PROFILE_REQUEST: 'user/USER_PROFILE_REQUEST',
+  USER_PROFILE_SUCCESS: 'user/USER_PROFILE_SUCCESS',
+  USER_PROFILE_FAILURE: 'user/USER_PROFILE_FAILURE',
 };
 
 export const Creators = {
@@ -35,6 +41,21 @@ export const Creators = {
   signoutReset: () => ({
     type: Types.SIGNOUT_RESET,
   }),
+
+  profileRequest: id => ({
+    type: Types.USER_PROFILE_REQUEST,
+    payload: { id },
+  }),
+
+  profileSuccess: user => ({
+    type: Types.USER_PROFILE_SUCCESS,
+    payload: { user },
+  }),
+
+  profileFailure: error => ({
+    type: Types.USER_PROFILE_FAILURE,
+    payload: { error },
+  }),
 };
 
 const INITIAL_STATE = {
@@ -42,6 +63,7 @@ const INITIAL_STATE = {
   loading: false,
   error: null,
   isAuthenticated: false,
+  userProfile: {},
 };
 
 export default function userReducer(state = INITIAL_STATE, action) {
@@ -66,6 +88,13 @@ export default function userReducer(state = INITIAL_STATE, action) {
       };
     case Types.SIGNOUT_RESET:
       return { ...INITIAL_STATE };
+
+    case Types.USER_PROFILE_REQUEST:
+      return { ...state, loading: true, error: null };
+    case Types.USER_PROFILE_SUCCESS:
+      return { ...state, loading: false, userProfile: action.payload.user };
+    case Types.USER_PROFILE_FAILURE:
+      return { ...state, loading: false, error: action.payload.error };
     default:
       return state;
   }

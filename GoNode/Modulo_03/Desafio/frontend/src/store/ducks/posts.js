@@ -25,6 +25,12 @@ export const Types = {
   NEW_COMMENT_REQUEST: 'post/NEW_COMMENT_REQUEST',
   NEW_COMMENT_SUCCESS: 'post/NEW_COMMENT_SUCCESS',
   NEW_COMMENT_FAILURE: 'post/NEW_COMMENT_FAILURE',
+
+  POSTS_NOTIFICATION_REQUEST: 'post/POSTS_NOTIFICATION_REQUEST',
+  POSTS_NOTIFICATION_SUCCESS: 'post/POSTS_NOTIFICATION_SUCCESS',
+
+  REALTIME_ADD_NOTIFICATION: 'post/REALTIME_ADD_NOTIFICATION',
+  REALTIME_DELETE_NOTIFICATION: 'post/REALTIME_DELETE_NOTIFICATION',
 };
 
 export const Creators = {
@@ -111,12 +117,32 @@ export const Creators = {
     type: Types.NEW_COMMENT_FAILURE,
     payload: { error },
   }),
+
+  postsNotificationsRequest: () => ({
+    type: Types.POSTS_NOTIFICATION_REQUEST,
+  }),
+
+  postsNotificationsSuccess: notifications => ({
+    type: Types.POSTS_NOTIFICATION_SUCCESS,
+    payload: { notifications },
+  }),
+
+  realtimeAddNotification: notification => ({
+    type: Types.REALTIME_ADD_NOTIFICATION,
+    payload: { notification },
+  }),
+
+  realtimeDeleteNotification: notificationId => ({
+    type: Types.REALTIME_DELETE_NOTIFICATION,
+    payload: { notificationId },
+  }),
 };
 
 const INITIAL_STATE = {
   data: [],
   loading: { status: false, topic: '' },
   error: null,
+  notifications: [],
 };
 
 function realtimeReplacePost(state, action) {
@@ -145,12 +171,28 @@ function realtimeDeletePost(state, action) {
   return state;
 }
 
+function realtimeDeleteNotification(state, action) {
+  const id = action.payload.notificationId._id;
+  const { notifications } = state;
+
+  console.log(id);
+  console.log(notifications);
+  const index = notifications.findIndex(notificationState => notificationState._id === id);
+  if (index !== -1) {
+    notifications.splice(index, 1);
+    return { ...state, notifications };
+  }
+
+  return state;
+}
+
 export default function postsReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.POSTS_REQUEST:
       return { ...state, loading: { status: true, topic: 'posts.request' } };
     case Types.POSTS_SUCCESS:
       return {
+        ...state,
         data: action.payload.posts,
         loading: { status: false, topic: 'posts.request' },
         error: null,
@@ -208,6 +250,17 @@ export default function postsReducer(state = INITIAL_STATE, action) {
         loading: { status: false, topic: 'post.newComment' },
         error: action.payload.error,
       };
+
+    case Types.POSTS_NOTIFICATION_SUCCESS:
+      return {
+        ...state,
+        notifications: action.payload.notifications,
+        error: null,
+      };
+    case Types.REALTIME_ADD_NOTIFICATION:
+      return { ...state, notifications: [action.payload.notification, ...state.notifications] };
+    case Types.REALTIME_DELETE_NOTIFICATION:
+      return realtimeDeleteNotification(state, action);
     default:
       return state;
   }

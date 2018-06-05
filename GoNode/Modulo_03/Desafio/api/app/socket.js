@@ -3,8 +3,9 @@ const { promisify } = require('util');
 const authConfig = require('../config/auth');
 const mongoose = require('mongoose');
 
-const Post = mongoose.model('Post');
 const User = mongoose.model('User');
+const Post = mongoose.model('Post');
+const PostNotification = mongoose.model('PostNotification');
 
 module.exports = (io) => {
   io.use(async (socket, next) => {
@@ -46,10 +47,24 @@ module.exports = (io) => {
         }
 
         const me = await User.findById(socket.client.userId);
-        const isFriend = me.friends.indexOf(fullPost.author._id);
 
-        if (isFriend !== -1) {
+        if (me.isFriend(fullPost.author._id)) {
           socket.emit(`posts.${type}`, fullPost);
+        }
+      });
+
+      PostNotification.watch().on('change', async (data) => {
+        if (data.operationType === 'delete') {
+          socket.emit('post.notification.delete', data.documentKey);
+          return;
+        }
+
+        if (String(data.fullDocument.to) !== socket.client.userId) return;
+
+        if (data.operationType === 'insert') {
+          const fullNotification = await PostNotification.findById(data.documentKey).populate('from');
+
+          socket.emit('post.notification.insert', fullNotification);
         }
       });
     }

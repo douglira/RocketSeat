@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as UserActions } from 'store/ducks/user';
 
+import FormEdit from './components/FormEdit';
+
 import { Container } from './styles';
 
 class Profile extends Component {
@@ -18,6 +20,12 @@ class Profile extends Component {
     }).isRequired,
   };
 
+  state = {
+    form: {
+      isDisabled: true,
+    },
+  };
+
   componentDidMount() {
     const { id } = this.props.match.params;
     this.props.profileRequest(id);
@@ -26,7 +34,7 @@ class Profile extends Component {
   render() {
     return (
       <Container>
-        <h1>Meu Perfil</h1>
+        <FormEdit isDisabled={this.state.form.isDisabled} />
       </Container>
     );
   }
@@ -34,7 +42,7 @@ class Profile extends Component {
 
 const mapStateToProps = state => ({
   me: state.user.data,
-  user: state.user.userProfile,
+  user: state.user.info,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(UserActions, dispatch);

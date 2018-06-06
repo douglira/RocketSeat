@@ -63,7 +63,7 @@ const INITIAL_STATE = {
   loading: false,
   error: null,
   isAuthenticated: false,
-  userProfile: {},
+  info: {},
 };
 
 export default function userReducer(state = INITIAL_STATE, action) {
@@ -92,7 +92,7 @@ export default function userReducer(state = INITIAL_STATE, action) {
     case Types.USER_PROFILE_REQUEST:
       return { ...state, loading: true, error: null };
     case Types.USER_PROFILE_SUCCESS:
-      return { ...state, loading: false, userProfile: action.payload.user };
+      return { ...state, loading: false, info: action.payload.user };
     case Types.USER_PROFILE_FAILURE:
       return { ...state, loading: false, error: action.payload.error };
     default:

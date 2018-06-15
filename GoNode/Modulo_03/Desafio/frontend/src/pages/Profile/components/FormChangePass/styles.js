@@ -16,10 +16,6 @@ export const Form = styled.form`
     padding-bottom: 15px;
     border-bottom: 0.75px solid #bbb;
 
-    span:first-child {
-      flex: 0 1;
-    }
-
     span {
       display: flex;
       flex: 1;
@@ -34,8 +30,7 @@ export const Form = styled.form`
     margin-top: 15px;
     font-size: 14px;
 
-    input,
-    select {
+    input {
       align-self: center;
       width: 100%;
       border: 0.75px solid #8d70ff;

@@ -43,6 +43,19 @@ module.exports = {
     }
   },
 
+  async search(req, res, next) {
+    try {
+      if (!req.params.id) {
+        return res.status(400).json({ error: 'Parameter is missing' });
+      }
+
+      const fullPost = await Post.getFull(req.params.id);
+      return res.json(fullPost);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
   async update(req, res, next) {
     try {
       const post = await Post.findByIdAndUpdate(
@@ -150,6 +163,19 @@ module.exports = {
         });
 
       return res.json(user.postNotifications);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async searchNotification(req, res, next) {
+    try {
+      if (!req.params.id) {
+        return res.status(400).json({ error: 'Parameter is missing' });
+      }
+
+      const fullNotification = await PostNotification.findById(req.params.id).populate('from');
+      return res.json(fullNotification);
     } catch (err) {
       return next(err);
     }

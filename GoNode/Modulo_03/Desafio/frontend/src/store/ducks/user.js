@@ -11,6 +11,14 @@ export const Types = {
   USER_PROFILE_REQUEST: 'user/USER_PROFILE_REQUEST',
   USER_PROFILE_SUCCESS: 'user/USER_PROFILE_SUCCESS',
   USER_PROFILE_FAILURE: 'user/USER_PROFILE_FAILURE',
+
+  UPDATE_PROFILE_REQUEST: 'user/UPDATE_PROFILE_REQUEST',
+  UPDATE_PROFILE_SUCCESS: 'user/UPDATE_PROFILE_SUCCESS',
+  UPDATE_PROFILE_FAILURE: 'user/UPDATE_PROFILE_FAILURE',
+
+  CHANGE_PASS_REQUEST: 'user/CHANGE_PASS_REQUEST',
+  CHANGE_PASS_SUCCESS: 'user/CHANGE_PASS_SUCCESS',
+  CHANGE_PASS_FAILURE: 'user/CHANGE_PASS_FAILURE',
 };
 
 export const Creators = {
@@ -56,6 +64,35 @@ export const Creators = {
     type: Types.USER_PROFILE_FAILURE,
     payload: { error },
   }),
+
+  updateProfileRequest: user => ({
+    type: Types.UPDATE_PROFILE_REQUEST,
+    payload: { user },
+  }),
+
+  updateProfileSuccess: user => ({
+    type: Types.UPDATE_PROFILE_SUCCESS,
+    payload: { user },
+  }),
+
+  updateProfileFailure: error => ({
+    type: Types.UPDATE_PROFILE_FAILURE,
+    payload: { error },
+  }),
+
+  changePassRequest: data => ({
+    type: Types.CHANGE_PASS_REQUEST,
+    payload: { data },
+  }),
+
+  changePassSuccess: () => ({
+    type: Types.CHANGE_PASS_SUCCESS,
+  }),
+
+  changePassFailure: error => ({
+    type: Types.CHANGE_PASS_FAILURE,
+    payload: { error },
+  }),
 };
 
 const INITIAL_STATE = {
@@ -94,6 +131,20 @@ export default function userReducer(state = INITIAL_STATE, action) {
     case Types.USER_PROFILE_SUCCESS:
       return { ...state, loading: false, info: action.payload.user };
     case Types.USER_PROFILE_FAILURE:
+      return { ...state, loading: false, error: action.payload.error };
+
+    case Types.UPDATE_PROFILE_REQUEST:
+      return { ...state, loading: true, error: null };
+    case Types.UPDATE_PROFILE_SUCCESS:
+      return { ...state, loading: false, info: action.payload.user };
+    case Types.UPDATE_PROFILE_FAILURE:
+      return { ...state, loading: false, error: action.payload.error };
+
+    case Types.CHANGE_PASS_REQUEST:
+      return { ...state, loading: true, error: null };
+    case Types.CHANGE_PASS_SUCCESS:
+      return state;
+    case Types.CHANGE_PASS_FAILURE:
       return { ...state, loading: false, error: action.payload.error };
     default:
       return state;

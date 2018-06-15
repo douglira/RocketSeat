@@ -3,8 +3,10 @@ export const Types = {
   POSTS_SUCCESS: 'posts/POSTS_SUCCESS',
   POSTS_FAILURE: 'posts/POSTS_FAILURE',
 
-  REALTIME_ADD: 'post/REALTIME_ADD',
-  REALTIME_REPLACE: 'post/REALTIME_REPLACE',
+  REALTIME_ADD_REQUEST: 'post/REALTIME_ADD_REQUEST',
+  REALTIME_ADD_SUCCESS: 'post/REALTIME_ADD_SUCCESS',
+  REALTIME_REPLACE_REQUEST: 'post/REALTIME_REPLACE_REQUEST',
+  REALTIME_REPLACE_SUCCESS: 'post/REALTIME_REPLACE_SUCCESS',
   REALTIME_DELETE: 'post/REALTIME_DELETE',
 
   POST_ADD_REQUEST: 'post/POST_ADD_REQUEST',
@@ -29,7 +31,8 @@ export const Types = {
   POSTS_NOTIFICATION_REQUEST: 'post/POSTS_NOTIFICATION_REQUEST',
   POSTS_NOTIFICATION_SUCCESS: 'post/POSTS_NOTIFICATION_SUCCESS',
 
-  REALTIME_ADD_NOTIFICATION: 'post/REALTIME_ADD_NOTIFICATION',
+  REALTIME_ADD_NOTIFICATION_REQUEST: 'post/REALTIME_ADD_NOTIFICATION_REQUEST',
+  REALTIME_ADD_NOTIFICATION_SUCCESS: 'post/REALTIME_ADD_NOTIFICATION_SUCCESS',
   REALTIME_DELETE_NOTIFICATION: 'post/REALTIME_DELETE_NOTIFICATION',
 };
 
@@ -48,13 +51,23 @@ export const Creators = {
     payload: { error },
   }),
 
-  realtimeAddPost: post => ({
-    type: Types.REALTIME_ADD,
+  realtimeAddPostRequest: id => ({
+    type: Types.REALTIME_ADD_REQUEST,
+    payload: { id },
+  }),
+
+  realtimeAddPostSuccess: post => ({
+    type: Types.REALTIME_ADD_SUCCESS,
     payload: { post },
   }),
 
-  realtimeReplacePost: post => ({
-    type: Types.REALTIME_REPLACE,
+  realtimeReplacePostRequest: id => ({
+    type: Types.REALTIME_REPLACE_REQUEST,
+    payload: { id },
+  }),
+
+  realtimeReplacePostSuccess: post => ({
+    type: Types.REALTIME_REPLACE_SUCCESS,
     payload: { post },
   }),
 
@@ -127,8 +140,13 @@ export const Creators = {
     payload: { notifications },
   }),
 
-  realtimeAddNotification: notification => ({
-    type: Types.REALTIME_ADD_NOTIFICATION,
+  realtimeAddNotificationRequest: id => ({
+    type: Types.REALTIME_ADD_NOTIFICATION_REQUEST,
+    payload: { id },
+  }),
+
+  realtimeAddNotificationSuccess: notification => ({
+    type: Types.REALTIME_ADD_NOTIFICATION_SUCCESS,
     payload: { notification },
   }),
 
@@ -175,8 +193,6 @@ function realtimeDeleteNotification(state, action) {
   const id = action.payload.notificationId._id;
   const { notifications } = state;
 
-  console.log(id);
-  console.log(notifications);
   const index = notifications.findIndex(notificationState => notificationState._id === id);
   if (index !== -1) {
     notifications.splice(index, 1);
@@ -204,9 +220,9 @@ export default function postsReducer(state = INITIAL_STATE, action) {
         error: action.payload.error,
       };
 
-    case Types.REALTIME_ADD:
+    case Types.REALTIME_ADD_SUCCESS:
       return { ...state, data: [action.payload.post, ...state.data] };
-    case Types.REALTIME_REPLACE:
+    case Types.REALTIME_REPLACE_SUCCESS:
       return realtimeReplacePost(state, action);
     case Types.REALTIME_DELETE:
       return realtimeDeletePost(state, action);
@@ -257,7 +273,7 @@ export default function postsReducer(state = INITIAL_STATE, action) {
         notifications: action.payload.notifications,
         error: null,
       };
-    case Types.REALTIME_ADD_NOTIFICATION:
+    case Types.REALTIME_ADD_NOTIFICATION_SUCCESS:
       return { ...state, notifications: [action.payload.notification, ...state.notifications] };
     case Types.REALTIME_DELETE_NOTIFICATION:
       return realtimeDeleteNotification(state, action);

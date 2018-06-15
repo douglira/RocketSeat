@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
-const authConfig = require('../config/auth');
+const authConfig = require('../../config/auth');
 const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
@@ -12,7 +12,7 @@ module.exports = (io) => {
     const { token } = socket.handshake.query;
 
     if (!token) {
-      return new Error('Not authorized');
+      return null;
     }
 
     try {
@@ -35,21 +35,21 @@ module.exports = (io) => {
         }
 
         let type = data.operationType;
-        const fullPost = await Post.getFull(data.documentKey);
+        const post = await Post.findById(data.documentKey);
 
         if (type === 'update' || type === 'replace') {
           type = 'edit';
         }
 
-        if (String(fullPost.author._id) === socket.client.userId) {
-          socket.emit(`posts.${type}`, fullPost);
+        if (String(post.author._id) === socket.client.userId) {
+          socket.emit(`posts.${type}`, data.documentKey);
           return;
         }
 
         const me = await User.findById(socket.client.userId);
 
-        if (me.isFriend(fullPost.author._id)) {
-          socket.emit(`posts.${type}`, fullPost);
+        if (me.isFriend(post.author._id)) {
+          socket.emit(`posts.${type}`, data.documentKey);
         }
       });
 
@@ -62,9 +62,7 @@ module.exports = (io) => {
         if (String(data.fullDocument.to) !== socket.client.userId) return;
 
         if (data.operationType === 'insert') {
-          const fullNotification = await PostNotification.findById(data.documentKey).populate('from');
-
-          socket.emit('post.notification.insert', fullNotification);
+          socket.emit('post.notification.insert', data.documentKey);
         }
       });
     }

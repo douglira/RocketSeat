@@ -149,7 +149,7 @@ class Header extends Component {
             <img src={this.props.user.avatar_url} alt={this.props.user.name} />
             <p>{this.props.user.name}</p>
           </div>
-          {location.pathname === '/app/profile' || (
+          {/\/app\/profile/i.test(location.pathname) || (
             <form onSubmit={this.handleAddPost}>
               <textarea
                 placeholder="No que está pensando?"

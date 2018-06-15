@@ -23,6 +23,38 @@ function* authentication(action) {
   }
 }
 
+function* update(action) {
+  try {
+    const { data } = yield call(api.put, '/user/profile', action.payload.user);
+
+    put(UserActions.updateProfileSuccess(data));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(UserActions.editProfileFailure(err.response.data.error));
+      yield put(NotificationActions.pushNotification(err.response.data.error));
+      return;
+    }
+
+    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+  }
+}
+
+function* changePassword(action) {
+  try {
+    const { data } = yield call(api.put, '/user/password', action.payload.data);
+
+    yield put(NotificationActions.pushNotification(data.message));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(UserActions.changePassFailure(err.response.data.error));
+      yield put(NotificationActions.pushNotification(err.response.data.error));
+      return;
+    }
+
+    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+  }
+}
+
 function* verify() {
   const token = localStorage.getItem('access_token');
   if (token) {
@@ -51,6 +83,9 @@ function* signout(action) {
 export default function* root() {
   yield takeLatest(UserTypes.CHECK_AUTH, verify);
   yield takeLatest(UserTypes.SIGNIN_REQUEST, authentication);
+  yield takeLatest(UserTypes.UPDATE_PROFILE_REQUEST, update);
+  yield takeLatest(UserTypes.CHANGE_PASS_REQUEST, changePassword);
+
   yield put(UserActions.checkAuth());
   yield takeLatest(UserTypes.SIGNOUT_REQUEST, signout);
 }

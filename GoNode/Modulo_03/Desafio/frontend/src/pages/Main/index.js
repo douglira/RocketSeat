@@ -13,17 +13,18 @@ import Header from 'components/Header';
 
 import PostList from 'pages/PostList';
 import Profile from 'pages/Profile';
+import FormChangePassword from 'pages/Profile/components/FormChangePass';
 
 import { Container, MainContainer, Navegation } from './styles';
 
 class Main extends Component {
   static propTypes = {
-    realtimeAddPost: PropTypes.func.isRequired,
-    realtimeReplacePost: PropTypes.func.isRequired,
+    realtimeAddPostRequest: PropTypes.func.isRequired,
+    realtimeReplacePostRequest: PropTypes.func.isRequired,
     realtimeDeletePost: PropTypes.func.isRequired,
     postsRequest: PropTypes.func.isRequired,
     postsNotificationsRequest: PropTypes.func.isRequired,
-    realtimeAddNotification: PropTypes.func.isRequired,
+    realtimeAddNotificationRequest: PropTypes.func.isRequired,
     realtimeDeleteNotification: PropTypes.func.isRequired,
     location: PropTypes.shape().isRequired,
     user: PropTypes.shape({
@@ -36,23 +37,23 @@ class Main extends Component {
       const socket = socketConnect();
       this.props.postsRequest();
       this.props.postsNotificationsRequest();
-      socket.on('posts.insert', (data) => {
-        this.props.realtimeAddPost(data);
-        // console.log(data);
+      socket.on('posts.insert', (id) => {
+        this.props.realtimeAddPostRequest(id);
+        // console.log(id);
       });
-      socket.on('posts.edit', (data) => {
-        this.props.realtimeReplacePost(data);
+      socket.on('posts.edit', (id) => {
+        this.props.realtimeReplacePostRequest(id);
       });
-      socket.on('posts.delete', (data) => {
-        this.props.realtimeDeletePost(data);
-        // console.log(data);
+      socket.on('posts.delete', (id) => {
+        this.props.realtimeDeletePost(id);
+        // console.log(id);
       });
-      socket.on('post.notification.insert', (data) => {
-        this.props.realtimeAddNotification(data);
+      socket.on('post.notification.insert', (id) => {
+        this.props.realtimeAddNotificationRequest(id);
       });
-      socket.on('post.notification.delete', (data) => {
-        this.props.realtimeDeleteNotification(data);
-        // console.log(data);
+      socket.on('post.notification.delete', (id) => {
+        this.props.realtimeDeleteNotification(id);
+        // console.log(id);
       });
     }
   }
@@ -81,7 +82,8 @@ class Main extends Component {
             </ul>
           </Navegation>
           <Route exact path="/app" component={PostList} />
-          <Route path="/app/profile/:id" component={Profile} />
+          <Route exact path="/app/profile/:id" component={Profile} />
+          <Route exact path="/app/profile/:id/change_password" component={FormChangePassword} />
         </MainContainer>
       </Container>
     );

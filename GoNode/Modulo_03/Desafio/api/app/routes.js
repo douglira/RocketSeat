@@ -41,6 +41,8 @@ routes.put('/posts/:id', controllers.postController.update);
 routes.delete('/posts/:id', controllers.postController.destroy);
 routes.put('/posts/:id/like', controllers.postController.toggleLike);
 routes.get('/posts/notifications', controllers.postController.allNotifications);
+routes.get('/posts/:id', controllers.postController.search);
+routes.get('/posts/notifications/:id', controllers.postController.searchNotification);
 
 /**
  * Comment

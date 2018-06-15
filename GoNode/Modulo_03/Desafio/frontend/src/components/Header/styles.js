@@ -16,8 +16,7 @@ export const Container = styled.div`
       border: 0;
       color: #666;
       font-weight: 300;
-      margin-left: 10px;
-      padding: 10px;
+      margin-right: 10px;
       background-color: inherit;
       position: relative;
 
@@ -39,6 +38,7 @@ export const Container = styled.div`
 
       i {
         font-size: 20px;
+        padding: 10px;
         color: #8d70ff;
         cursor: pointer;
       }

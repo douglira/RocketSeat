@@ -4,6 +4,51 @@ import { Types as PostsTypes, Creators as PostsActions } from 'store/ducks/posts
 import { Creators as NotificationActions } from 'store/ducks/notification';
 import { api } from 'services/api';
 
+function* realtimeAdd(action) {
+  try {
+    const { data: post } = yield call(api.get, `/posts/${action.payload.id._id}`);
+
+    yield put(PostsActions.realtimeAddPostSuccess(post));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(NotificationActions.pushNotification(err.response.data.error));
+      return;
+    }
+
+    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+  }
+}
+
+function* realtimeReplace(action) {
+  try {
+    const { data: post } = yield call(api.get, `/posts/${action.payload.id._id}`);
+
+    yield put(PostsActions.realtimeReplacePostSuccess(post));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(NotificationActions.pushNotification(err.response.data.error));
+      return;
+    }
+
+    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+  }
+}
+
+function* realtimeAddNotification(action) {
+  try {
+    const { data: notification } = yield call(api.get, `/posts/notifications/${action.payload.id._id}`);
+
+    yield put(PostsActions.realtimeAddNotificationSuccess(notification));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(NotificationActions.pushNotification(err.response.data.error));
+      return;
+    }
+
+    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+  }
+}
+
 function* getAll() {
   try {
     const response = yield call(api.get, '/posts');
@@ -100,6 +145,9 @@ function* getAllNotifications() {
 }
 
 export default function* rootPosts() {
+  yield takeLatest(PostsTypes.REALTIME_ADD_REQUEST, realtimeAdd);
+  yield takeLatest(PostsTypes.REALTIME_REPLACE_REQUEST, realtimeReplace);
+  yield takeLatest(PostsTypes.REALTIME_ADD_NOTIFICATION_REQUEST, realtimeAddNotification);
   yield takeLatest(PostsTypes.POSTS_REQUEST, getAll);
   yield takeLatest(PostsTypes.POST_ADD_REQUEST, add);
   yield takeLatest(PostsTypes.POST_EDIT_REQUEST, edit);

@@ -14,7 +14,7 @@ export const Animations = {
               transform: scale(1);
       -webkit-animation-timing-function: ease-out;
               animation-timing-function: ease-out;
-      opacity: 0.75;
+      opacity: 0.80;
     }
     55% {
       -webkit-transform: scale(0.7);
@@ -57,12 +57,12 @@ export const Animations = {
     0% {
       -webkit-transform: scale(1);
               transform: scale(1);
-      opacity: 0.75;
+      opacity: 0.80;
     }
     100% {
       -webkit-transform: scale(0);
               transform: scale(0);
-      opacity: 0.75;
+      opacity: 0.80;
     }
   `,
 };
@@ -70,9 +70,9 @@ export const Animations = {
 export const Container = styled.div`
   position: absolute;
   top: 25px;
-  right: 25px;
+  left: 25px;
   max-width: 380px;
-  background: #ff5252;
+  background: ${props => (props.topic === 'success' ? '#76FF03' : '#ff5252')};
   padding: 20px;
   border-radius: 3px;
   box-sizing: border-box;
@@ -84,5 +84,6 @@ export const Container = styled.div`
     color: #fff;
     font-size: 14px;
     margin: 0 !important;
+    opacity: 1 !important;
   }
 `;

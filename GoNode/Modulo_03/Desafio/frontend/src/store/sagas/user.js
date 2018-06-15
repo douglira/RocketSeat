@@ -15,11 +15,11 @@ function* authentication(action) {
   } catch (err) {
     if (err.response.data && err.response.data.error) {
       yield put(UserActions.unauthorized(err.response.data.error));
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
       return;
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -31,11 +31,11 @@ function* update(action) {
   } catch (err) {
     if (err.response.data && err.response.data.error) {
       yield put(UserActions.editProfileFailure(err.response.data.error));
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
       return;
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -43,15 +43,15 @@ function* changePassword(action) {
   try {
     const { data } = yield call(api.put, '/user/password', action.payload.data);
 
-    yield put(NotificationActions.pushNotification(data.message));
+    yield put(NotificationActions.pushNotification({ text: data.message, topic: 'success' }));
   } catch (err) {
     if (err.response.data && err.response.data.error) {
       yield put(UserActions.changePassFailure(err.response.data.error));
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
       return;
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -64,7 +64,7 @@ function* verify() {
     } catch (err) {
       localStorage.removeItem('access_token');
       yield put(UserActions.unauthorized('User not authorized'));
-      yield put(NotificationActions.pushNotification('User not authorized'));
+      yield put(NotificationActions.pushNotification({ text: 'User not authorized', topic: 'error' }));
     }
   } else {
     localStorage.removeItem('access_token');

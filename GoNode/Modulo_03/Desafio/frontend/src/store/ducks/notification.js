@@ -5,14 +5,14 @@ export const Types = {
 };
 
 export const Creators = {
-  pushNotification: text => ({
+  pushNotification: notification => ({
     type: Types.PUSH_NOTIFICATION,
-    payload: { text },
+    payload: { ...notification },
   }),
 
-  showNotification: text => ({
+  showNotification: notification => ({
     type: Types.SHOW_NOTIFICATION,
-    payload: { text },
+    payload: { ...notification },
   }),
 
   hideNotification: () => ({
@@ -22,13 +22,14 @@ export const Creators = {
 
 const INITIAL_STATE = {
   text: '',
+  topic: '',
   visible: false,
 };
 
 export default function notificationReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.SHOW_NOTIFICATION:
-      return { text: action.payload.text, visible: true };
+      return { text: action.payload.text, topic: action.payload.topic, visible: true };
     case Types.HIDE_NOTIFICATION:
       return { ...state, visible: false };
     default:

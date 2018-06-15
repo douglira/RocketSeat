@@ -7,7 +7,7 @@ import {
 } from 'store/ducks/notification';
 
 function* pushAsync(action) {
-  yield put(NotificationActions.showNotification(action.payload.text));
+  yield put(NotificationActions.showNotification({ ...action.payload }));
 
   yield delay(4500);
 

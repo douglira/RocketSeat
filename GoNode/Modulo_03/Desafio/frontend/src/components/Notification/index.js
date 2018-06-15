@@ -7,9 +7,13 @@ import { Container, Animations } from './styles';
 
 const Notification = ({ notification }) => (
   <Container
+    topic={notification.topic}
     style={
       notification.visible
-        ? { opacity: 0.75, animation: `${Animations.bounceIn} 1.1s both` }
+        ? {
+            opacity: 0.8,
+            animation: `${Animations.bounceIn} 1.1s both`,
+          }
         : {
             opacity: 0,
             animation: notification.text

@@ -11,11 +11,11 @@ function* realtimeAdd(action) {
     yield put(PostsActions.realtimeAddPostSuccess(post));
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
       return;
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -26,11 +26,11 @@ function* realtimeReplace(action) {
     yield put(PostsActions.realtimeReplacePostSuccess(post));
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
       return;
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -41,11 +41,11 @@ function* realtimeAddNotification(action) {
     yield put(PostsActions.realtimeAddNotificationSuccess(notification));
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
       return;
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -56,11 +56,11 @@ function* getAll() {
     yield put(PostsActions.postsSuccess(response.data));
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
       return;
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -71,10 +71,10 @@ function* add(action) {
     yield put(PostsActions.addPostSuccess(response.data));
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -85,10 +85,10 @@ function* edit(action) {
     yield call(api.put, `/posts/${postId}`, { content });
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -99,10 +99,10 @@ function* destroy(action) {
     yield call(api.delete, `/posts/${postId}`);
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -113,10 +113,10 @@ function* toggleLike(action) {
     yield call(api.put, `/posts/${postId}/like`);
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -127,10 +127,10 @@ function* newComment(action) {
     yield call(api.post, `/post/${postId}/comment`, { content });
   } catch (err) {
     if (err.response.data && err.response.data.error) {
-      yield put(NotificationActions.pushNotification(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
     }
 
-    yield put(NotificationActions.pushNotification('Unexpected error. Try again later'));
+    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
   }
 }
 
@@ -140,7 +140,7 @@ function* getAllNotifications() {
 
     yield put(PostsActions.postsNotificationsSuccess(data));
   } catch (err) {
-    yield put(NotificationActions.pushNotification('It was not possible to import post notifications'));
+    yield put(NotificationActions.pushNotification({ text: 'It was not possible to import post notifications', topic: 'error' }));
   }
 }
 

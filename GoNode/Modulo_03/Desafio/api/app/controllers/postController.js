@@ -120,12 +120,14 @@ module.exports = {
         await post.save();
 
         const notification = await PostNotification.findOne({ post: post.id });
-        const user = await User.findById(notification.to);
+        if (notification) {
+          const user = await User.findById(notification.to);
 
-        const index = user.postNotifications.indexOf(notification.id);
-        user.postNotifications.splice(index, 1);
-        await notification.remove();
-        await user.save();
+          const index = user.postNotifications.indexOf(notification.id);
+          user.postNotifications.splice(index, 1);
+          await notification.remove();
+          await user.save();
+        }
 
         return res.json();
       }
@@ -176,6 +178,20 @@ module.exports = {
 
       const fullNotification = await PostNotification.findById(req.params.id).populate('from');
       return res.json(fullNotification);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async removeNotification(req, res, next) {
+    try {
+      if (!req.params.id) {
+        return res.status(400).json({ error: 'Parameter is missing' });
+      }
+
+      await PostNotification.findByIdAndRemove(req.params.id);
+
+      return res.json();
     } catch (err) {
       return next(err);
     }

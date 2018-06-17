@@ -42,6 +42,7 @@ routes.delete('/posts/:id', controllers.postController.destroy);
 routes.put('/posts/:id/like', controllers.postController.toggleLike);
 routes.get('/posts/notifications', controllers.postController.allNotifications);
 routes.get('/posts/:id', controllers.postController.search);
+routes.delete('/posts/notifications/:id', controllers.postController.removeNotification);
 routes.get('/posts/notifications/:id', controllers.postController.searchNotification);
 
 /**
@@ -49,9 +50,11 @@ routes.get('/posts/notifications/:id', controllers.postController.searchNotifica
  */
 routes.post('/post/:id/comment', controllers.commentController.create);
 routes.get('/post/:id/comments', controllers.commentController.feedByPost);
-routes.put('/post/:id/comment', controllers.commentController.update);
-routes.delete('/post/:id/comment', controllers.commentController.destroy);
+routes.put('/post/comment/:id', controllers.commentController.update);
+routes.delete('/post/comment/:id', controllers.commentController.destroy);
 routes.put('/post/comment/:id/like', controllers.commentController.toggleLike);
+routes.get('/post/comment/:id', controllers.commentController.search);
+
 /**
  * Error
  */

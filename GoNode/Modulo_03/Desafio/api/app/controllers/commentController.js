@@ -129,13 +129,30 @@ module.exports = {
           },
           populate: {
             path: 'author',
-            select: 'name',
+            select: ['name', 'avatar_url'],
           },
         });
 
       const comments = _.orderBy(postComments.comments, 'createdAt', 'desc');
 
       return res.json(comments);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async search(req, res, next) {
+    try {
+      if (!req.params.id) {
+        return res.status(400).json({ error: 'Parameter is missing' });
+      }
+
+      const comment = await Comment.findById(req.params.id).populate({
+        path: 'author',
+        select: ['name', 'avatar_url'],
+      });
+
+      return res.json(comment);
     } catch (err) {
       return next(err);
     }

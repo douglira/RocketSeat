@@ -26,14 +26,16 @@ export const Container = styled.div`
         align-items: center;
         position: absolute;
         top: 0px;
-        right: 7px;
-        font-size: 12px;
+        right: 0px;
+        font-size: 11px;
         height: 15px;
         width: 15px;
         border-radius: 15px;
         background: #ef5350;
         color: #f9f9f9;
         font-weight: bold;
+        padding: 10px;
+        box-sizing: border-box;
       }
 
       i {
@@ -79,7 +81,7 @@ export const ContainerInfo = styled.div`
     }
 
     p {
-      color: #222;
+      color: #4b379a;
       font-size: 24px;
       margin-top: 15px;
       font-weight: 500;

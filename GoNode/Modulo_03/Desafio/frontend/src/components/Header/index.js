@@ -108,7 +108,7 @@ class Header extends Component {
             </button>
           </Popover>
           <Popover
-            content={<PostNotification />}
+            content={<PostNotification onSelected={() => this.setState({ popoverPosts: false })} />}
             trigger="click"
             visible={this.state.popoverPosts}
             onVisibleChange={this.handlePopoverVisible('popoverPosts')}

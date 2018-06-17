@@ -9,6 +9,7 @@ import { Creators as PostsActions } from 'store/ducks/posts';
 
 import PostForm from './components/PostForm';
 import MenuOptions from './components/MenuOptions';
+import CommentsList from './components/CommentsList';
 
 import { Post, PostInteractions } from './styles';
 
@@ -32,6 +33,7 @@ class PostItem extends Component {
   };
 
   state = {
+    showComments: false,
     inputComment: '',
     inputEditPost: this.props.post.content,
     showEditField: false,
@@ -137,9 +139,26 @@ class PostItem extends Component {
             <span>{likesCount}</span>{' '}
             <i className={post.isLiked ? 'fa fa-thumbs-up' : 'fa fa-thumbs-o-up'} />
           </button>
-          <button>
+          <button onClick={() => this.setState({ showComments: true })}>
             <span>{commentsCount}</span> <i className="fa fa-comments-o" />
           </button>
+          {this.state.showComments ? (
+            <CommentsList
+              postId={this.props.postId}
+              postAuthorId={post.author._id}
+              onClose={() => this.setState({ showComments: false })}
+              visible={this.state.showComments}
+              form={
+                <PostForm
+                  onSubmit={this.handleAddComment}
+                  onKeyDown={this.handleEnterAddComment}
+                  placeholder="Escrever comentário..."
+                  textareaValue={this.state.inputComment}
+                  onChange={e => this.setState({ inputComment: e.target.value })}
+                />
+              }
+            />
+          ) : null}
           <PostForm
             onSubmit={this.handleAddComment}
             onKeyDown={this.handleEnterAddComment}
@@ -154,7 +173,9 @@ class PostItem extends Component {
 }
 
 const mapStateToProps = ({ user, posts }, ownProps) => {
+  console.tron.log(ownProps.postId);
   const post = posts.data.find(postState => postState._id === ownProps.postId);
+  console.tron.log(post);
   post.isLiked = post.likes.includes(user.data._id);
   const likesCount = post.likes.length;
   const commentsCount = post.comments.length;
@@ -170,4 +191,9 @@ const mapStateToProps = ({ user, posts }, ownProps) => {
 
 const mapDispatchToProps = dispatch => bindActionCreators(PostsActions, dispatch);
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PostItem));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(PostItem),
+);

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
+const Comment = mongoose.model('Comment');
 const PostNotification = mongoose.model('PostNotification');
 
 module.exports = (io) => {
@@ -54,15 +55,20 @@ module.exports = (io) => {
       });
 
       PostNotification.watch().on('change', async (data) => {
-        if (data.operationType === 'delete') {
-          socket.emit('post.notification.delete', data.documentKey);
-          return;
-        }
-
+        if (data.operationType === 'delete') return;
         if (String(data.fullDocument.to) !== socket.client.userId) return;
 
         if (data.operationType === 'insert') {
           socket.emit('post.notification.insert', data.documentKey);
+        }
+      });
+
+      Comment.watch().on('change', async (data) => {
+        if (data.operationType === 'insert') {
+          socket.emit(`comment.${data.operationType}.${data.fullDocument.post}`, {
+            id: data.documentKey._id,
+            postId: data.fullDocument.post,
+          });
         }
       });
     }

@@ -19,18 +19,29 @@ export const Container = styled.div`
   section {
     display: flex;
     flex: 1;
+    align-self: stretch;
     flex-direction: column;
+    min-height: 80px;
 
     &:hover {
       background: #f1f1f1;
     }
 
-    i {
-      color: #666;
-      align-self: flex-end;
-      font-size: 14px;
+    &:not(:first-child) {
+      border-bottom: 0.8px solid #ddd;
+    }
+
+    button {
+      border: 0;
       padding: 5px;
+      align-self: flex-end;
       cursor: pointer;
+      background: transparent;
+
+      i {
+        color: #666;
+        font-size: 14px;
+      }
     }
 
     div {
@@ -38,10 +49,11 @@ export const Container = styled.div`
       flex-direction: row;
       align-items: center;
       cursor: pointer;
-      padding-bottom: 10px;
+      padding: 0 5px 10px 5px;
 
-      &:not(:first-child) {
-        border-bottom: 0.8px solid #ddd;
+      a {
+        color: inherit !important;
+        text-decoration: initial;
       }
 
       img {

@@ -12,6 +12,7 @@ import { socketConnect } from 'services/api';
 import Header from 'components/Header';
 
 import PostList from 'pages/PostList';
+import Post from 'pages/Post';
 import Profile from 'pages/Profile';
 import FormChangePassword from 'pages/Profile/components/FormChangePass';
 
@@ -25,7 +26,6 @@ class Main extends Component {
     postsRequest: PropTypes.func.isRequired,
     postsNotificationsRequest: PropTypes.func.isRequired,
     realtimeAddNotificationRequest: PropTypes.func.isRequired,
-    realtimeDeleteNotification: PropTypes.func.isRequired,
     location: PropTypes.shape().isRequired,
     user: PropTypes.shape({
       isAuthenticated: PropTypes.bool,
@@ -39,21 +39,15 @@ class Main extends Component {
       this.props.postsNotificationsRequest();
       socket.on('posts.insert', (id) => {
         this.props.realtimeAddPostRequest(id);
-        // console.log(id);
       });
       socket.on('posts.edit', (id) => {
         this.props.realtimeReplacePostRequest(id);
       });
       socket.on('posts.delete', (id) => {
         this.props.realtimeDeletePost(id);
-        // console.log(id);
       });
       socket.on('post.notification.insert', (id) => {
         this.props.realtimeAddNotificationRequest(id);
-      });
-      socket.on('post.notification.delete', (id) => {
-        this.props.realtimeDeleteNotification(id);
-        // console.log(id);
       });
     }
   }
@@ -84,6 +78,7 @@ class Main extends Component {
           <Route exact path="/app" component={PostList} />
           <Route exact path="/app/profile/:id" component={Profile} />
           <Route exact path="/app/profile/:id/change_password" component={FormChangePassword} />
+          <Route exact path="/app/posts/:id" component={Post} />
         </MainContainer>
       </Container>
     );

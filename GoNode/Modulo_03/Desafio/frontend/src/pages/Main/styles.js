@@ -50,6 +50,7 @@ export const Navegation = styled.nav`
 
       a {
         color: #8d70ff !important;
+        text-decoration: inherit;
 
         &:hover {
           color: #5d4ba5 !important;

@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 export const Post = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
-  align-self: stretch;
   margin: 20px 0;
   border-radius: 6px;
   background: #e1e1e1;

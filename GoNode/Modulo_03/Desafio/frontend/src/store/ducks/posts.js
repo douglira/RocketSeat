@@ -30,10 +30,10 @@ export const Types = {
 
   POSTS_NOTIFICATION_REQUEST: 'post/POSTS_NOTIFICATION_REQUEST',
   POSTS_NOTIFICATION_SUCCESS: 'post/POSTS_NOTIFICATION_SUCCESS',
+  POSTS_NOTIFICATION_REMOVE: 'post/POSTS_NOTIFICATION_REMOVE',
 
   REALTIME_ADD_NOTIFICATION_REQUEST: 'post/REALTIME_ADD_NOTIFICATION_REQUEST',
   REALTIME_ADD_NOTIFICATION_SUCCESS: 'post/REALTIME_ADD_NOTIFICATION_SUCCESS',
-  REALTIME_DELETE_NOTIFICATION: 'post/REALTIME_DELETE_NOTIFICATION',
 };
 
 export const Creators = {
@@ -140,6 +140,11 @@ export const Creators = {
     payload: { notifications },
   }),
 
+  postsNotificationsRemove: notificationId => ({
+    type: Types.POSTS_NOTIFICATION_REMOVE,
+    payload: { notificationId },
+  }),
+
   realtimeAddNotificationRequest: id => ({
     type: Types.REALTIME_ADD_NOTIFICATION_REQUEST,
     payload: { id },
@@ -148,11 +153,6 @@ export const Creators = {
   realtimeAddNotificationSuccess: notification => ({
     type: Types.REALTIME_ADD_NOTIFICATION_SUCCESS,
     payload: { notification },
-  }),
-
-  realtimeDeleteNotification: notificationId => ({
-    type: Types.REALTIME_DELETE_NOTIFICATION,
-    payload: { notificationId },
   }),
 };
 
@@ -189,8 +189,8 @@ function realtimeDeletePost(state, action) {
   return state;
 }
 
-function realtimeDeleteNotification(state, action) {
-  const id = action.payload.notificationId._id;
+function postsNotificationsRemove(state, action) {
+  const id = action.payload.notificationId;
   const { notifications } = state;
 
   const index = notifications.findIndex(notificationState => notificationState._id === id);
@@ -275,8 +275,8 @@ export default function postsReducer(state = INITIAL_STATE, action) {
       };
     case Types.REALTIME_ADD_NOTIFICATION_SUCCESS:
       return { ...state, notifications: [action.payload.notification, ...state.notifications] };
-    case Types.REALTIME_DELETE_NOTIFICATION:
-      return realtimeDeleteNotification(state, action);
+    case Types.POSTS_NOTIFICATION_REMOVE:
+      return postsNotificationsRemove(state, action);
     default:
       return state;
   }

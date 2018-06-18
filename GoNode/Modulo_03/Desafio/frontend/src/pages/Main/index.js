@@ -30,6 +30,9 @@ class Main extends Component {
     user: PropTypes.shape({
       isAuthenticated: PropTypes.bool,
     }).isRequired,
+    posts: PropTypes.shape({
+      data: PropTypes.arrayOf(PropTypes.shape),
+    }).isRequired,
   };
 
   componentDidMount() {
@@ -53,7 +56,7 @@ class Main extends Component {
   }
 
   render() {
-    const { user, location } = this.props;
+    const { user, posts, location } = this.props;
     if (!user.isAuthenticated) {
       return <Redirect to={{ pathname: '/login', state: { from: location } }} />;
     }
@@ -75,7 +78,7 @@ class Main extends Component {
               </li>
             </ul>
           </Navegation>
-          <Route exact path="/app" component={PostList} />
+          <Route exact path="/app" render={props => <PostList {...props} posts={posts.data} />} />
           <Route exact path="/app/profile/:id" component={Profile} />
           <Route exact path="/app/profile/:id/change_password" component={FormChangePassword} />
           <Route exact path="/app/posts/:id" component={Post} />
@@ -85,8 +88,9 @@ class Main extends Component {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
+const mapStateToProps = ({ user, posts }) => ({
   user,
+  posts,
 });
 
 const mapDispatchToProps = dispatch =>

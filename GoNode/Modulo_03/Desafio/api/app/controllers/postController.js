@@ -56,6 +56,39 @@ module.exports = {
     }
   },
 
+  async friendFeed(req, res, next) {
+    try {
+      if (!req.params.id) {
+        return res.status(400).json({ error: 'Parameter is missing' });
+      }
+
+      const me = await User.findById(req.userId);
+
+      const index = me.friends.findIndex(friendId => String(friendId) === req.params.id);
+
+      if (index === -1) {
+        return res.status(400).json({ error: 'You can not see this profile' });
+      }
+
+      const user = await User.findById(req.params.id)
+        .select('posts')
+        .populate({
+          path: 'posts',
+          options: {
+            limit: 15,
+          },
+          populate: {
+            path: 'author',
+            select: ['name', 'avatar_url'],
+          },
+        });
+
+      return res.json(_.orderBy(user.posts, 'createdAt', 'desc'));
+    } catch (err) {
+      return next(err);
+    }
+  },
+
   async update(req, res, next) {
     try {
       const post = await Post.findByIdAndUpdate(

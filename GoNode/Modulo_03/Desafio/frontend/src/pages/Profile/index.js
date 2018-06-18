@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as UserActions } from 'store/ducks/user';
 
+import FriendFeedProfile from 'pages/Profile/components/FriendFeedProfile';
 import FormEdit from './components/FormEdit';
 
 import { Container } from './styles';
@@ -17,6 +18,9 @@ class Profile extends Component {
       params: PropTypes.shape({
         id: PropTypes.string,
       }),
+    }).isRequired,
+    me: PropTypes.shape({
+      _id: PropTypes.string,
     }).isRequired,
   };
 
@@ -32,9 +36,15 @@ class Profile extends Component {
   }
 
   render() {
+    const { id } = this.props.match.params;
+
     return (
       <Container>
-        <FormEdit isDisabled={this.state.form.isDisabled} />
+        {this.props.me._id === id ? (
+          <FormEdit isDisabled={this.state.form.isDisabled} />
+        ) : (
+          <FriendFeedProfile friendId={id} />
+        )}
       </Container>
     );
   }
@@ -42,7 +52,6 @@ class Profile extends Component {
 
 const mapStateToProps = state => ({
   me: state.user.data,
-  user: state.user.info,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(UserActions, dispatch);

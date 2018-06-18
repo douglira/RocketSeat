@@ -2,24 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import { connect } from 'react-redux';
-
 import PostItem from 'components/PostItem';
 
 import { Container } from './styles';
 
 const PostList = ({ posts }) => (
-  <Container>{posts.map(item => <PostItem key={Math.random()} postId={item.postId} />)}</Container>
+  <Container>
+    {posts.map((post) => {
+      const data = {
+        post,
+        likesCount: post.likes.length,
+        commentsCount: post.comments.length,
+      };
+
+      return <PostItem key={post._id} {...data} />;
+    })}
+  </Container>
 );
 
 PostList.propTypes = {
-  posts: PropTypes.arrayOf(PropTypes.shape({
-    postId: PropTypes.string,
-  })).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.shape).isRequired,
 };
 
-const mapStateToProps = ({ posts }) => ({
-  posts: posts.data.map(post => ({ postId: post._id })),
-});
-
-export default withRouter(connect(mapStateToProps)(PostList));
+export default withRouter(PostList);

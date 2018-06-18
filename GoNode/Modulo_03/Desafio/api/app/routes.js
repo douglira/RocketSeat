@@ -44,6 +44,7 @@ routes.get('/posts/notifications', controllers.postController.allNotifications);
 routes.get('/posts/:id', controllers.postController.search);
 routes.delete('/posts/notifications/:id', controllers.postController.removeNotification);
 routes.get('/posts/notifications/:id', controllers.postController.searchNotification);
+routes.get('/posts/user/:id', controllers.postController.friendFeed);
 
 /**
  * Comment

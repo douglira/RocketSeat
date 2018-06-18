@@ -20,6 +20,7 @@ export const Post = styled.div`
       width: 48px;
       height: 48px;
       border-radius: 48px;
+      cursor: pointer;
     }
 
     p {
@@ -31,6 +32,8 @@ export const Post = styled.div`
       align-items: center;
       margin-bottom: 0;
       padding: 0;
+      cursor: pointer;
+      text-decoration: initial;
     }
   }
 

@@ -24,6 +24,11 @@ class Header extends Component {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }).isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.string,
+      }),
+    }).isRequired,
     history: PropTypes.shape({
       replace: PropTypes.func,
     }).isRequired,
@@ -77,8 +82,29 @@ class Header extends Component {
     this.setState({ [tooltipName]: false });
   };
 
+  renderHeader = () => {
+    const { user, location, match } = this.props;
+
+    if (location.pathname === `/app/profile/${user._id}`) {
+      return null;
+    } else if (/\/app\/profile\//.test(location.pathname) && match.params.id !== user._id) {
+      return <p>Dados do amiguinho...</p>;
+    }
+    return (
+      <form onSubmit={this.handleAddPost}>
+        <textarea
+          placeholder="No que está pensando?"
+          value={this.state.form.post}
+          onChange={this.handleChange('post')}
+          draggable={false}
+        />
+        <button type="submit">Publicar</button>
+      </form>
+    );
+  };
+
   render() {
-    const { location, postsNotificationsCount } = this.props;
+    const { postsNotificationsCount } = this.props;
 
     return (
       <Container>
@@ -149,17 +175,7 @@ class Header extends Component {
             <img src={this.props.user.avatar_url} alt={this.props.user.name} />
             <p>{this.props.user.name}</p>
           </div>
-          {/\/app\/profile/i.test(location.pathname) || (
-            <form onSubmit={this.handleAddPost}>
-              <textarea
-                placeholder="No que está pensando?"
-                value={this.state.form.post}
-                onChange={this.handleChange('post')}
-                draggable={false}
-              />
-              <button type="submit">Publicar</button>
-            </form>
-          )}
+          {this.renderHeader()}
         </ContainerInfo>
       </Container>
     );

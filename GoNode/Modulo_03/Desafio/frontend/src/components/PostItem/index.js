@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { Modal } from 'antd';
 
 import { connect } from 'react-redux';
@@ -19,8 +19,11 @@ class PostItem extends Component {
     newCommentRequest: PropTypes.func.isRequired,
     editPostRequest: PropTypes.func.isRequired,
     deletePostRequest: PropTypes.func.isRequired,
+    user: PropTypes.shape({
+      _id: PropTypes.string,
+    }).isRequired,
     post: PropTypes.shape({
-      _id: PropTypes.stirng,
+      _id: PropTypes.string,
       author: PropTypes.shape({
         avatar_url: PropTypes.string,
         name: PropTypes.string,
@@ -29,7 +32,6 @@ class PostItem extends Component {
     }).isRequired,
     likesCount: PropTypes.number.isRequired,
     commentsCount: PropTypes.number.isRequired,
-    showMenuOptions: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -111,14 +113,23 @@ class PostItem extends Component {
   };
 
   render() {
-    const { post, likesCount, commentsCount } = this.props;
+    const {
+      user, post, likesCount, commentsCount,
+    } = this.props;
+    post.isLiked = post.likes.includes(user._id);
 
     return (
       <Post>
         <div>
-          <img src={post.author.avatar_url} alt={post.author.name} />
-          <p>{post.author.name}</p>
-          {this.props.showMenuOptions && <MenuOptions onClick={this.handleMenuOptionsClick} />}
+          <Link to={`/app/profile/${post.author._id}`}>
+            <img src={post.author.avatar_url} alt={post.author.name} />
+          </Link>
+          <Link to={`/app/profile/${post.author._id}`}>
+            <p>{post.author.name}</p>
+          </Link>
+          {post.author._id === user._id ? (
+            <MenuOptions onClick={this.handleMenuOptionsClick} />
+          ) : null}
         </div>
         {this.state.showEditField ? (
           <PostForm
@@ -144,7 +155,7 @@ class PostItem extends Component {
           </button>
           {this.state.showComments ? (
             <CommentsList
-              postId={this.props.postId}
+              postId={post._id}
               postAuthorId={post.author._id}
               onClose={() => this.setState({ showComments: false })}
               visible={this.state.showComments}
@@ -172,22 +183,9 @@ class PostItem extends Component {
   }
 }
 
-const mapStateToProps = ({ user, posts }, ownProps) => {
-  console.tron.log(ownProps.postId);
-  const post = posts.data.find(postState => postState._id === ownProps.postId);
-  console.tron.log(post);
-  post.isLiked = post.likes.includes(user.data._id);
-  const likesCount = post.likes.length;
-  const commentsCount = post.comments.length;
-  const showMenuOptions = post.author._id === user.data._id;
-  return {
-    user: user.data,
-    post,
-    likesCount,
-    commentsCount,
-    showMenuOptions,
-  };
-};
+const mapStateToProps = ({ user }) => ({
+  user: user.data,
+});
 
 const mapDispatchToProps = dispatch => bindActionCreators(PostsActions, dispatch);
 

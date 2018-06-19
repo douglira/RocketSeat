@@ -71,6 +71,15 @@ module.exports = (io) => {
           });
         }
       });
+
+      User.watch().on('change', async (data) => {
+        if (
+          (data.operationType === 'update' || data.operationType === 'replace') &&
+          String(data.documentKey) === socket.client.userId
+        ) {
+          socket.emit('user.edit', data.documentKey._id);
+        }
+      });
     }
   });
 };

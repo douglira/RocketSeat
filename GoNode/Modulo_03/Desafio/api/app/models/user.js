@@ -46,7 +46,6 @@ const UserSchema = new mongoose.Schema({
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendsRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-  postNotifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PostNotification' }],
   passwordResetToken: {
     type: String,
     uppercase: true,
@@ -76,7 +75,15 @@ UserSchema.methods = {
   },
 
   generateToken() {
-    return jwt.sign({ user: this }, authConfig.secret, { expiresIn: authConfig.expireTokenTime });
+    return jwt.sign(
+      {
+        _id: this._id,
+        name: this.name,
+        email: this.email,
+      },
+      authConfig.secret,
+      { expiresIn: authConfig.expireTokenTime },
+    );
   },
 
   resetPass() {

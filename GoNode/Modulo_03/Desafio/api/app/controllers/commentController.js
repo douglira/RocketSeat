@@ -37,15 +37,12 @@ module.exports = {
       post.comments.push(comment.id);
       await post.save();
 
-      const notification = await PostNotification.create({
+      await PostNotification.create({
         post: post.id,
         from: req.userId,
         to: userPostAuthor.id,
         topic: 'comment',
       });
-      const user = await User.findById(userPostAuthor.id);
-      user.postNotifications.push(notification.id);
-      await user.save();
 
       return res.status(201).json(comment);
     } catch (err) {

@@ -1,6 +1,5 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import { api } from 'services/api';
-import jwtDecode from 'jwt-decode';
 
 import { Types as UserTypes, Creators as UserActions } from 'store/ducks/user';
 import { Creators as NotificationActions } from 'store/ducks/notification';
@@ -19,7 +18,10 @@ function* authentication(action) {
       return;
     }
 
-    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
+    yield put(NotificationActions.pushNotification({
+      text: 'Unexpected error. Try again later',
+      topic: 'error',
+    }));
   }
 }
 
@@ -35,7 +37,10 @@ function* update(action) {
       return;
     }
 
-    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
+    yield put(NotificationActions.pushNotification({
+      text: 'Unexpected error. Try again later',
+      topic: 'error',
+    }));
   }
 }
 
@@ -51,7 +56,29 @@ function* changePassword(action) {
       return;
     }
 
-    yield put(NotificationActions.pushNotification({ text: 'Unexpected error. Try again later', topic: 'error' }));
+    yield put(NotificationActions.pushNotification({
+      text: 'Unexpected error. Try again later',
+      topic: 'error',
+    }));
+  }
+}
+
+function* getInfo(action) {
+  try {
+    const { data } = yield call(api.get, `/user/profile/${action.payload.id}`);
+
+    yield put(UserActions.profileSuccess(data));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(UserActions.profileFailure(err.response.data.error));
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
+      return;
+    }
+
+    yield put(NotificationActions.pushNotification({
+      text: 'Unexpected error. Try again later',
+      topic: 'error',
+    }));
   }
 }
 
@@ -59,8 +86,8 @@ function* verify() {
   const token = localStorage.getItem('access_token');
   if (token) {
     try {
-      const decoded = jwtDecode(token);
-      yield put(UserActions.authorized(decoded.user));
+      const { data } = yield call(api.get, 'user/me');
+      yield put(UserActions.authorized(data));
     } catch (err) {
       localStorage.removeItem('access_token');
       yield put(UserActions.unauthorized('User not authorized'));
@@ -69,6 +96,16 @@ function* verify() {
   } else {
     localStorage.removeItem('access_token');
     yield put(UserActions.unauthorized('User not authorized'));
+  }
+}
+
+function* realtimeEdit() {
+  try {
+    const { data: user } = yield call(api.get, '/user/me');
+
+    yield put(UserActions.realtimeEditUserSuccess(user));
+  } catch (err) {
+    console.log(err);
   }
 }
 
@@ -85,6 +122,8 @@ export default function* root() {
   yield takeLatest(UserTypes.SIGNIN_REQUEST, authentication);
   yield takeLatest(UserTypes.UPDATE_PROFILE_REQUEST, update);
   yield takeLatest(UserTypes.CHANGE_PASS_REQUEST, changePassword);
+  yield takeLatest(UserTypes.USER_PROFILE_REQUEST, getInfo);
+  yield takeLatest(UserTypes.REALTIME_EDIT_REQUEST, realtimeEdit);
 
   yield put(UserActions.checkAuth());
   yield takeLatest(UserTypes.SIGNOUT_REQUEST, signout);

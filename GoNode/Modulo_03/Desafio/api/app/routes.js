@@ -20,17 +20,20 @@ routes.use(authMiddleware);
 /**
  * User
  */
-routes.get('/user/profile', controllers.userController.profile);
+routes.get('/user/me', controllers.userController.me);
 routes.put('/user/profile', controllers.userController.updateProfile);
 routes.put('/user/password', controllers.userController.updatePassword);
+routes.get('/user/profile/:id', controllers.userController.profile);
 
 /**
  * Friend
  */
+routes.get('/friends/request', controllers.friendController.requestList);
 routes.post('/friend/:id/request', controllers.friendController.request);
 routes.put('/friend/:id/request/decline', controllers.friendController.decline);
 routes.post('/friend/:id', controllers.friendController.add);
 routes.delete('/friend/:id', controllers.friendController.remove);
+routes.get('/friends/', controllers.friendController.all);
 
 /**
  * Post

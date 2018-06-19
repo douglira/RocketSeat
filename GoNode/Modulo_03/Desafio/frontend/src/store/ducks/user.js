@@ -19,6 +19,9 @@ export const Types = {
   CHANGE_PASS_REQUEST: 'user/CHANGE_PASS_REQUEST',
   CHANGE_PASS_SUCCESS: 'user/CHANGE_PASS_SUCCESS',
   CHANGE_PASS_FAILURE: 'user/CHANGE_PASS_FAILURE',
+
+  REALTIME_EDIT_REQUEST: 'user/REALTIME_EDIT_REQUEST',
+  REALTIME_EDIT_SUCCESS: 'user/REALTIME_EDIT_SUCCESS',
 };
 
 export const Creators = {
@@ -93,6 +96,15 @@ export const Creators = {
     type: Types.CHANGE_PASS_FAILURE,
     payload: { error },
   }),
+
+  realtimeEditUserRequest: () => ({
+    type: Types.REALTIME_EDIT_REQUEST,
+  }),
+
+  realtimeEditUserSuccess: user => ({
+    type: Types.REALTIME_EDIT_SUCCESS,
+    payload: { user },
+  }),
 };
 
 const INITIAL_STATE = {
@@ -111,6 +123,7 @@ export default function userReducer(state = INITIAL_STATE, action) {
       return { ...state, loading: true, error: null };
     case Types.AUTHORIZED:
       return {
+        ...state,
         data: action.payload.user,
         loading: false,
         error: null,
@@ -146,6 +159,9 @@ export default function userReducer(state = INITIAL_STATE, action) {
       return state;
     case Types.CHANGE_PASS_FAILURE:
       return { ...state, loading: false, error: action.payload.error };
+
+    case Types.REALTIME_EDIT_SUCCESS:
+      return { ...state, data: action.payload.user };
     default:
       return state;
   }

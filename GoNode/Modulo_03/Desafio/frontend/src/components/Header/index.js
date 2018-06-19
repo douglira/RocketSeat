@@ -17,17 +17,17 @@ class Header extends Component {
     addPost: PropTypes.func.isRequired,
     signoutRequest: PropTypes.func.isRequired,
     postsNotificationsCount: PropTypes.number.isRequired,
+    loading: PropTypes.bool.isRequired,
     user: PropTypes.shape({
+      avatar_url: PropTypes.string,
+      name: PropTypes.string,
+    }).isRequired,
+    friend: PropTypes.shape({
       avatar_url: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string,
-    }).isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string,
-      }),
     }).isRequired,
     history: PropTypes.shape({
       replace: PropTypes.func,
@@ -82,29 +82,25 @@ class Header extends Component {
     this.setState({ [tooltipName]: false });
   };
 
-  renderHeader = () => {
-    const { user, location, match } = this.props;
-
-    if (location.pathname === `/app/profile/${user._id}`) {
-      return null;
-    } else if (/\/app\/profile\//.test(location.pathname) && match.params.id !== user._id) {
-      return <p>Dados do amiguinho...</p>;
-    }
-    return (
-      <form onSubmit={this.handleAddPost}>
-        <textarea
-          placeholder="No que está pensando?"
-          value={this.state.form.post}
-          onChange={this.handleChange('post')}
-          draggable={false}
-        />
-        <button type="submit">Publicar</button>
-      </form>
-    );
-  };
-
   render() {
-    const { postsNotificationsCount } = this.props;
+    const {
+      user, friend, loading, location, postsNotificationsCount,
+    } = this.props;
+    const friendId = location.pathname.split(/\/app\/profile\//)[1];
+
+    if (/\/app\/profile\//.test(location.pathname) && friendId !== user._id) {
+      return loading ? (
+        <i className="fa fa-spinner fa-pulse fa-lg" />
+      ) : (
+        <ContainerInfo>
+          <div>
+            <img src={friend.avatar_url} alt={friend.name} />
+            <p>{friend.name}</p>
+            <span>{friend.city}, {friend.state}</span>
+          </div>
+        </ContainerInfo>
+      );
+    }
 
     return (
       <Container>
@@ -175,7 +171,17 @@ class Header extends Component {
             <img src={this.props.user.avatar_url} alt={this.props.user.name} />
             <p>{this.props.user.name}</p>
           </div>
-          {this.renderHeader()}
+          {location.pathname === `/app/profile/${user._id}` || (
+            <form onSubmit={this.handleAddPost}>
+              <textarea
+                placeholder="No que está pensando?"
+                value={this.state.form.post}
+                onChange={this.handleChange('post')}
+                draggable={false}
+              />
+              <button type="submit">Publicar</button>
+            </form>
+          )}
         </ContainerInfo>
       </Container>
     );
@@ -184,6 +190,8 @@ class Header extends Component {
 
 const mapStateToProps = state => ({
   user: state.user.data,
+  friend: state.user.info,
+  loading: state.user.loading,
   postsNotificationsCount: state.posts.notifications.length,
 });
 

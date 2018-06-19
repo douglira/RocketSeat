@@ -154,12 +154,7 @@ module.exports = {
 
         const notification = await PostNotification.findOne({ post: post.id });
         if (notification) {
-          const user = await User.findById(notification.to);
-
-          const index = user.postNotifications.indexOf(notification.id);
-          user.postNotifications.splice(index, 1);
           await notification.remove();
-          await user.save();
         }
 
         return res.json();
@@ -168,16 +163,12 @@ module.exports = {
       post.likes.push(req.userId);
       await post.save();
 
-      const notification = await PostNotification.create({
+      await PostNotification.create({
         post: post.id,
         from: req.userId,
         to: post.author,
         topic: 'like',
       });
-      const user = await User.findById(notification.to);
-      console.log(user);
-      user.postNotifications.push(notification.id);
-      await user.save();
 
       return res.json();
     } catch (err) {
@@ -187,17 +178,12 @@ module.exports = {
 
   async allNotifications(req, res, next) {
     try {
-      const user = await User.findById(req.userId)
-        .select('postNotifications')
-        .populate({
-          path: 'postNotifications',
-          populate: {
-            path: 'from',
-            select: ['name', 'avatar_url'],
-          },
-        });
+      const notifications = await PostNotification.find({ to: req.userId }).populate({
+        path: 'from',
+        select: ['name', 'avatar_url'],
+      });
 
-      return res.json(user.postNotifications);
+      return res.json(notifications);
     } catch (err) {
       return next(err);
     }

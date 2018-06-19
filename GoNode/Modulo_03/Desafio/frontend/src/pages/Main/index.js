@@ -15,6 +15,7 @@ import PostList from 'pages/PostList';
 import Post from 'pages/Post';
 import Profile from 'pages/Profile';
 import FormChangePassword from 'pages/Profile/components/FormChangePass';
+import Friends from 'pages/Friends';
 
 import { Container, MainContainer, Navegation } from './styles';
 
@@ -26,6 +27,7 @@ class Main extends Component {
     postsRequest: PropTypes.func.isRequired,
     postsNotificationsRequest: PropTypes.func.isRequired,
     realtimeAddNotificationRequest: PropTypes.func.isRequired,
+    realtimeEditUserRequest: PropTypes.func.isRequired,
     location: PropTypes.shape().isRequired,
     user: PropTypes.shape({
       isAuthenticated: PropTypes.bool,
@@ -40,6 +42,7 @@ class Main extends Component {
       const socket = socketConnect();
       this.props.postsRequest();
       this.props.postsNotificationsRequest();
+      this.props.realtimeEditUserRequest();
       socket.on('posts.insert', (id) => {
         this.props.realtimeAddPostRequest(id);
       });
@@ -51,6 +54,9 @@ class Main extends Component {
       });
       socket.on('post.notification.insert', (id) => {
         this.props.realtimeAddNotificationRequest(id);
+      });
+      socket.on('user.edit', () => {
+        this.props.realtimeEditUserRequest();
       });
     }
   }
@@ -74,7 +80,7 @@ class Main extends Component {
                 <NavLink to={`/app/profile/${user.data._id}`}>Meu perfil</NavLink>
               </li>
               <li>
-                <NavLink to="/app">Amigos</NavLink>
+                <NavLink to="/app/friends">Amigos</NavLink>
               </li>
             </ul>
           </Navegation>
@@ -82,6 +88,7 @@ class Main extends Component {
           <Route exact path="/app/profile/:id" component={Profile} />
           <Route exact path="/app/profile/:id/change_password" component={FormChangePassword} />
           <Route exact path="/app/posts/:id" component={Post} />
+          <Route exact path="/app/friends" component={Friends} />
         </MainContainer>
       </Container>
     );

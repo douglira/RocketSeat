@@ -1,8 +1,19 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
 const User = mongoose.model('User');
 
 module.exports = {
+  async me(req, res, next) {
+    try {
+      const me = await User.findById(req.userId);
+
+      return res.json(me);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
   async updateProfile(req, res, next) {
     try {
       const user = await User.findByIdAndUpdate(req.userId, { ...req.body }, { new: true });
@@ -54,7 +65,14 @@ module.exports = {
         return res.status(400).json({ error: 'User not found' });
       }
 
-      return res.json(user);
+      const me = await User.findById(req.userId);
+
+      const commonFriends = {
+        friends: _.intersectionWith(me.friends, user.friends, _.isEqual),
+        count: _.intersectionWith(me.friends, user.friends, _.isEqual).length,
+      };
+
+      return res.json({ ...user._doc, commonFriends });
     } catch (err) {
       return next();
     }

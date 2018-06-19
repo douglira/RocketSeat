@@ -3,6 +3,27 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
 module.exports = {
+  async requestList(req, res, next) {
+    try {
+      const me = User.findById(req.userId)
+        .select('friendsRequest')
+        .populate({
+          path: 'friendsRequest',
+          select: ['name', 'avatar_url'],
+          options: {
+            limit: 15,
+            sort: {
+              name: 1,
+            },
+          },
+        });
+
+      return res.json(me.friendsRequest);
+    } catch (err) {
+      return next(err);
+    }
+  },
+
   async request(req, res, next) {
     try {
       const { id } = req.params;
@@ -155,6 +176,27 @@ module.exports = {
       await me.save();
 
       return res.json();
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async all(req, res, next) {
+    try {
+      const me = await User.findById(req.userId)
+        .select('friends')
+        .populate({
+          path: 'friends',
+          select: ['name', 'avatar_url', 'city', 'state'],
+          options: {
+            limit: 15,
+            sort: {
+              name: 1,
+            },
+          },
+        });
+
+      return res.json({ friends: me.friends, friendsCount: me.friends.length });
     } catch (err) {
       return next(err);
     }

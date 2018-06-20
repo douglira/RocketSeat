@@ -61,7 +61,12 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.index({ email: 1 });
 UserSchema.index({ friends: 1 });
+UserSchema.index({ friendsRequest: 1 });
+UserSchema.index({ posts: -1 });
 UserSchema.index({ email: 1, password: 1 });
+UserSchema.index({ city: -1 });
+UserSchema.index({ name: -1 });
+UserSchema.index({ name: -1, city: -1 });
 
 UserSchema.pre('save', async function hashPassword(next) {
   if (!this.isModified('password')) next();
@@ -103,9 +108,15 @@ UserSchema.methods = {
     return index !== -1;
   },
 
-  removeNotification(id) {
-    const index = this.postNotifications.indexOf(id);
-    this.postNotifications.splice(index, 1);
+  relationshipStatus(user) {
+    if (this.isFriend(user._id)) {
+      return 'friend';
+    } else if (this.friendsRequest.indexOf(user._id) !== -1) {
+      return 'request_received';
+    } else if (user.friendsRequest.indexOf(this._id) !== -1) {
+      return 'request_sent';
+    }
+    return 'unknown';
   },
 };
 

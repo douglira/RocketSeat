@@ -16,6 +16,7 @@ import Post from 'pages/Post';
 import Profile from 'pages/Profile';
 import FormChangePassword from 'pages/Profile/components/FormChangePass';
 import Friends from 'pages/Friends';
+import SearchFriends from 'pages/SearchFriends';
 
 import { Container, MainContainer, Navegation } from './styles';
 
@@ -82,6 +83,9 @@ class Main extends Component {
               <li>
                 <NavLink to="/app/friends">Amigos</NavLink>
               </li>
+              <li>
+                <NavLink to="/app/friends/search">Procurar</NavLink>
+              </li>
             </ul>
           </Navegation>
           <Route exact path="/app" render={props => <PostList {...props} posts={posts.data} />} />
@@ -89,6 +93,7 @@ class Main extends Component {
           <Route exact path="/app/profile/:id/change_password" component={FormChangePassword} />
           <Route exact path="/app/posts/:id" component={Post} />
           <Route exact path="/app/friends" component={Friends} />
+          <Route exact path="/app/friends/search" component={SearchFriends} />
         </MainContainer>
       </Container>
     );

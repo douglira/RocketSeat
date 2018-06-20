@@ -19,7 +19,7 @@ module.exports = (io) => {
     try {
       const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
-      socket.client.userId = decoded.user._id;
+      socket.client.userId = decoded._id;
 
       return next();
     } catch (err) {
@@ -75,7 +75,7 @@ module.exports = (io) => {
       User.watch().on('change', async (data) => {
         if (
           (data.operationType === 'update' || data.operationType === 'replace') &&
-          String(data.documentKey) === socket.client.userId
+          String(data.documentKey._id) === socket.client.userId
         ) {
           socket.emit('user.edit', data.documentKey._id);
         }

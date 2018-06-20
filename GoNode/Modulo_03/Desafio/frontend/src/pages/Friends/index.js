@@ -9,24 +9,34 @@ import { Creators as NotificationActions } from 'store/ducks/notification';
 
 import { api } from 'services/api';
 
-import { Container, HeaderCollapse, FriendCard, AntdPainel, AntdCollapse } from './styles';
+import {
+  Container,
+  HeaderCollapse,
+  FriendCard,
+  AntdPainel,
+  AntdCollapse,
+} from './styles';
 
 class Friends extends Component {
   static propTypes = {
     pushNotification: PropTypes.func.isRequired,
-    friendsRequest: PropTypes.arrayOf(PropTypes.string).isRequired,
+    friendsRequest: PropTypes.arrayOf(PropTypes.shape({
+      _id: PropTypes.string,
+      avatar_url: PropTypes.string,
+      name: PropTypes.string,
+      city: PropTypes.string,
+      state: PropTypes.string,
+    })).isRequired,
   };
 
   state = {
     friends: [],
     friendsCount: 0,
     loading: true,
-    friendRequest: [],
   };
 
   componentDidMount() {
     this.fetchFriendList();
-    this.fetchFriendRequestList();
   }
 
   fetchFriendList = async () => {
@@ -35,38 +45,70 @@ class Friends extends Component {
 
       this.setState({ ...data });
     } catch (err) {
-      this.props.pushNotification({
-        text: 'Não foi possível importar sua lista de amigos',
-        topic: 'error',
-      });
+      if (err.response.data && err.response.data.error) {
+        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
+      } else {
+        this.props.pushNotification({
+          text: 'Não foi possível importar sua lista de amigos',
+          topic: 'error',
+        });
+      }
     } finally {
       this.setState({ loading: false });
     }
   };
 
-  fetchFriendRequestList = async () => {
-    try {
-      const { data } = await api.get('/friends/request');
-
-      this.setState({ friendsRequest: data });
-    } catch (err) {
-      this.props.pushNotification({
-        text: 'Não foi possível importar sua lista de pedidos de amizade',
-        topic: 'error',
-      });
-    }
-  }
-
   removeFriend = async (friendId) => {
     try {
       await api.delete(`/friend/${friendId}`);
+      this.fetchFriendList();
       this.props.pushNotification({
-        text: 'Amizade removida com sucesso',
+        text: 'Agora vocês não são mais amigos',
         topic: 'success',
       });
     } catch (err) {
+      if (err.response.data && err.response.data.error) {
+        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
+        return;
+      }
       this.props.pushNotification({
         text: 'Não foi possível remover amizade',
+        topic: 'error',
+      });
+    }
+  };
+
+  acceptRequest = async (id) => {
+    try {
+      await api.post(`/friend/${id}`);
+      this.fetchFriendList();
+      this.props.pushNotification({
+        text: 'Agora vocês são amigos',
+        topic: 'success',
+      });
+    } catch (err) {
+      if (err.response.data && err.response.data.error) {
+        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
+        return;
+      }
+      this.props.pushNotification({
+        text: 'Não foi possível aceitar a solicitação de amizade. Tente novamente',
+        topic: 'error',
+      });
+    }
+  };
+
+  declineRequest = async (id) => {
+    try {
+      await api.put(`/friend/${id}/request/decline`);
+      this.fetchFriendList();
+    } catch (err) {
+      if (err.response.data && err.response.data.error) {
+        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
+        return;
+      }
+      this.props.pushNotification({
+        text: 'Não foi possível recusar a solicitação de amizade. Tente novamente',
         topic: 'error',
       });
     }
@@ -78,12 +120,16 @@ class Friends extends Component {
         {this.state.loading ? (
           <i className="fa fa-spinner fa-pulse fa-lg" />
         ) : (
-          <Collapse bordered={false} defaultActiveKey={['2']} style={AntdCollapse}>
+          <Collapse
+            bordered={false}
+            defaultActiveKey={[!this.props.friendsRequest.length ? '2' : '1']}
+            style={AntdCollapse}
+          >
             <Collapse.Panel
               key="1"
               header={
                 <HeaderCollapse>
-                  Pedidos de amizade ({this.props.friendsRequest.length})
+                  Solicitações de amizade ({this.props.friendsRequest.length})
                 </HeaderCollapse>
               }
               style={AntdPainel}
@@ -91,7 +137,7 @@ class Friends extends Component {
               {!this.props.friendsRequest.length ? (
                 <p>Não há solicitações de amizade.</p>
               ) : (
-                this.state.friendRequest.map(friend => (
+                this.props.friendsRequest.map(friend => (
                   <FriendCard key={friend._id}>
                     <img src={friend.avatar_url} alt={friend.name} />
                     <section>
@@ -102,12 +148,12 @@ class Friends extends Component {
                     </section>
                     <Tooltip title="Aceitar" placement="left">
                       <button onClick={() => this.acceptRequest(friend._id)}>
-                        <i className="fa fa-check-circle fa-lg" />
+                        <i className="fa fa-check-circle fa-lg" style={{ color: '#15d8a5' }} />
                       </button>
                     </Tooltip>
                     <Tooltip title="Recusar" placement="left">
                       <button onClick={() => this.declineRequest(friend._id)}>
-                        <i className="fa fa-times-circle fa-lg" />
+                        <i className="fa fa-times-circle fa-lg" style={{ color: 'tomato' }} />
                       </button>
                     </Tooltip>
                   </FriendCard>
@@ -134,7 +180,7 @@ class Friends extends Component {
                   </section>
                   <Tooltip title="Desfazer amizade" placement="left">
                     <button onClick={() => this.removeFriend(friend._id)}>
-                      <i className="fa fa-times-circle fa-lg" />
+                      <i className="fa fa-times-circle fa-lg" style={{ color: 'tomato' }} />
                     </button>
                   </Tooltip>
                 </FriendCard>

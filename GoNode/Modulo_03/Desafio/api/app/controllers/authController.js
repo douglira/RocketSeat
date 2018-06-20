@@ -13,7 +13,17 @@ module.exports = {
         return res.status(400).json({ error: 'Credentials not provided' });
       }
 
-      const user = await User.findOne({ email }).select('+password');
+      const user = await User.findOne({ email })
+        .select('+password')
+        .populate({
+          path: 'friendsRequest',
+          select: ['name', 'avatar_url', 'city', 'state'],
+          options: {
+            sort: {
+              name: 1,
+            },
+          },
+        });
 
       if (!user) {
         return res.status(400).json({ error: 'User not found' });

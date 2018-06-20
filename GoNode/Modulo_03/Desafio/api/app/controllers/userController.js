@@ -6,7 +6,15 @@ const User = mongoose.model('User');
 module.exports = {
   async me(req, res, next) {
     try {
-      const me = await User.findById(req.userId);
+      const me = await User.findById(req.userId).populate({
+        path: 'friendsRequest',
+        select: ['name', 'avatar_url', 'city', 'state'],
+        options: {
+          sort: {
+            name: 1,
+          },
+        },
+      });
 
       return res.json(me);
     } catch (err) {
@@ -16,7 +24,19 @@ module.exports = {
 
   async updateProfile(req, res, next) {
     try {
-      const user = await User.findByIdAndUpdate(req.userId, { ...req.body }, { new: true });
+      const user = await User.findByIdAndUpdate(
+        req.userId,
+        { ...req.body },
+        { new: true },
+      ).populate({
+        path: 'friendsRequest',
+        select: ['name', 'avatar_url', 'city', 'state'],
+        options: {
+          sort: {
+            name: 1,
+          },
+        },
+      });
 
       return res.json(user);
     } catch (err) {
@@ -75,6 +95,40 @@ module.exports = {
       return res.json({ ...user._doc, commonFriends });
     } catch (err) {
       return next();
+    }
+  },
+
+  async search(req, res, next) {
+    try {
+      const { search } = req.query;
+      const regexSearch = new RegExp(search, 'i');
+      const searchUsers = [];
+
+      const me = await User.findById(req.userId);
+
+      const users = await User.find()
+        .select(['name', 'avatar_url', 'state', 'city', 'friendsRequest', 'friends'])
+        .or([{ name: regexSearch }])
+        .or([{ city: regexSearch }])
+        .nor([{ _id: req.userId }])
+        .limit(15)
+        .sort({ name: 1 });
+
+      users.forEach((user) => {
+        const status = me.relationshipStatus(user);
+
+        searchUsers.push({
+          ...user._doc,
+          commonFriends: {
+            count: _.intersectionWith(me.friends, user.friends, _.isEqual).length,
+          },
+          status,
+        });
+      });
+
+      return res.json(searchUsers);
+    } catch (err) {
+      return next(err);
     }
   },
 };

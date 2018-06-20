@@ -17,10 +17,11 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px 0;
+  flex-direction: column;
 `;
 
 export const HeaderCollapse = styled.p`
-  font-size: 14px;
+  font-size: 16px;
   vertical-align: middle;
   color: #8d70ff;
 `;
@@ -65,9 +66,9 @@ export const FriendCard = styled.div`
   button {
     border: 0;
     background: #f1f1f1;
-    color: #666;
     padding: 5px;
     box-sizing: border-box;
+    margin-left: 10px;
 
     i {
       cursor: pointer;

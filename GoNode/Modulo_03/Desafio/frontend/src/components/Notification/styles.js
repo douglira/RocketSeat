@@ -72,7 +72,7 @@ export const Container = styled.div`
   top: 25px;
   left: 25px;
   max-width: 380px;
-  background: ${props => (props.topic === 'success' ? '#76FF03' : '#ff5252')};
+  background: ${props => (props.topic === 'success' ? '#16ca00' : '#ff5252')};
   padding: 20px;
   border-radius: 3px;
   box-sizing: border-box;

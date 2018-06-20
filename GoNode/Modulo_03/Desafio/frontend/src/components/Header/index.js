@@ -10,13 +10,15 @@ import { Creators as UserActions } from 'store/ducks/user';
 
 import { ContainerInfo, Container } from './styles';
 
-import PostNotification from './components/PostNotifications';
+import PostNotifications from './components/PostNotifications';
+import FriendNotifications from './components/FriendNotifications';
 
 class Header extends Component {
   static propTypes = {
     addPost: PropTypes.func.isRequired,
     signoutRequest: PropTypes.func.isRequired,
     postsNotificationsCount: PropTypes.number.isRequired,
+    friendsRequestCount: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
     user: PropTypes.shape({
       avatar_url: PropTypes.string,
@@ -84,7 +86,12 @@ class Header extends Component {
 
   render() {
     const {
-      user, friend, loading, location, postsNotificationsCount,
+      user,
+      friend,
+      loading,
+      location,
+      postsNotificationsCount,
+      friendsRequestCount,
     } = this.props;
     const friendId = location.pathname.split(/\/app\/profile\//)[1];
 
@@ -96,7 +103,9 @@ class Header extends Component {
           <div>
             <img src={friend.avatar_url} alt={friend.name} />
             <p>{friend.name}</p>
-            <span>{friend.city}, {friend.state}</span>
+            <span>
+              {friend.city}, {friend.state}
+            </span>
           </div>
         </ContainerInfo>
       );
@@ -106,8 +115,11 @@ class Header extends Component {
       <Container>
         <nav>
           <Popover
-            content={<p>Silvana Lira</p>}
-            title="Solicitações"
+            content={
+              <FriendNotifications
+                onSelected={() => this.setState({ popoverFriendsRequest: false })}
+              />
+            }
             trigger="click"
             visible={this.state.popoverFriendsRequest}
             onVisibleChange={this.handlePopoverVisible('popoverFriendsRequest')}
@@ -126,11 +138,13 @@ class Header extends Component {
               >
                 <i className="fa fa-user-plus" />
               </Tooltip>
-              <span>2</span>
+              {friendsRequestCount > 0 ? <span>{friendsRequestCount}</span> : null}
             </button>
           </Popover>
           <Popover
-            content={<PostNotification onSelected={() => this.setState({ popoverPosts: false })} />}
+            content={
+              <PostNotifications onSelected={() => this.setState({ popoverPosts: false })} />
+            }
             trigger="click"
             visible={this.state.popoverPosts}
             onVisibleChange={this.handlePopoverVisible('popoverPosts')}
@@ -188,11 +202,12 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user.data,
-  friend: state.user.info,
-  loading: state.user.loading,
-  postsNotificationsCount: state.posts.notifications.length,
+const mapStateToProps = ({ user, posts }) => ({
+  user: user.data,
+  friend: user.info,
+  loading: user.loading,
+  friendsRequestCount: user.data.friendsRequest.length,
+  postsNotificationsCount: posts.notifications.length,
 });
 
 const mapDispatchToProps = dispatch =>

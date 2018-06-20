@@ -24,9 +24,9 @@ const PostNotificationSchema = new mongoose.Schema({
 });
 
 PostNotificationSchema.index({ createdAt: -1 });
-PostNotificationSchema.index({ post: -1, user: -1 });
+PostNotificationSchema.index({ post: -1, to: -1 });
 PostNotificationSchema.index({ post: -1 });
-PostNotificationSchema.index({ user: -1 });
-PostNotificationSchema.index({ state: -1 });
+PostNotificationSchema.index({ to: -1 });
+PostNotificationSchema.index({ topic: -1 });
 
 mongoose.model('PostNotification', PostNotificationSchema);

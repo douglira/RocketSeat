@@ -109,6 +109,78 @@ function* realtimeEdit() {
   }
 }
 
+function* friendRequest(action) {
+  try {
+    yield call(api.post, `/friend/${action.payload.id}/request`);
+    yield put(NotificationActions.pushNotification({
+      text: 'Solicitação de amizade enviada com sucesso',
+      topic: 'success',
+    }));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
+      return;
+    }
+    yield put(NotificationActions.pushNotification({
+      text: 'Não foi possível recusar a solicitação de amizade. Tente novamente',
+      topic: 'error',
+    }));
+  }
+}
+
+function* acceptFriend(action) {
+  try {
+    yield call(api.post, `/friend/${action.payload.id}`);
+    yield put(NotificationActions.pushNotification({
+      text: 'Agora vocês são amigos',
+      topic: 'success',
+    }));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
+      return;
+    }
+    yield put(NotificationActions.pushNotification({
+      text: 'Não foi possível aceitar a solicitação de amizade. Tente novamente',
+      topic: 'error',
+    }));
+  }
+}
+
+function* declineFriend(action) {
+  try {
+    yield call(api.put, `/friend/${action.payload.id}/request/decline`);
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
+      return;
+    }
+    yield put(NotificationActions.pushNotification({
+      text: 'Não foi possível recusar ou cancelar a solicitação de amizade. Tente novamente',
+      topic: 'error',
+    }));
+  }
+}
+
+function* removeFriend(action) {
+  try {
+    yield call(api.delete, `/friend/${action.payload.id}`);
+    yield put(NotificationActions.pushNotification({
+      text: 'Agora vocês não são mais amigos',
+      topic: 'success',
+    }));
+  } catch (err) {
+    if (err.response.data && err.response.data.error) {
+      yield put(NotificationActions.pushNotification({ text: err.response.data.error, topic: 'error' }));
+      return;
+    }
+    yield put(NotificationActions.pushNotification({
+      text: 'Não foi possível remover amizade',
+      topic: 'error',
+    }));
+  }
+}
+
 function* signout(action) {
   localStorage.removeItem('access_token');
 
@@ -124,6 +196,11 @@ export default function* root() {
   yield takeLatest(UserTypes.CHANGE_PASS_REQUEST, changePassword);
   yield takeLatest(UserTypes.USER_PROFILE_REQUEST, getInfo);
   yield takeLatest(UserTypes.REALTIME_EDIT_REQUEST, realtimeEdit);
+
+  yield takeLatest(UserTypes.SEND_FRIEND_REQUEST, friendRequest);
+  yield takeLatest(UserTypes.ACCEPT_FRIEND_REQUEST, acceptFriend);
+  yield takeLatest(UserTypes.DECLINE_FRIEND_REQUEST, declineFriend);
+  yield takeLatest(UserTypes.REMOVE_FRIEND, removeFriend);
 
   yield put(UserActions.checkAuth());
   yield takeLatest(UserTypes.SIGNOUT_REQUEST, signout);

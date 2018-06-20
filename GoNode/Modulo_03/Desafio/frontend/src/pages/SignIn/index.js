@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as UserActions } from 'store/ducks/user';
 
-import { Container, Header } from './styles';
+import logo from 'assets/images/logo-2.png';
+import { Container } from './styles';
 
 class SignIn extends Component {
   static propTypes = {
@@ -48,7 +49,7 @@ class SignIn extends Component {
 
     return (
       <Container>
-        <Header>Facerocket</Header>
+        <img src={logo} alt="Facerocket" />
         <form onSubmit={this.handleSignIn}>
           <input
             type="email"
@@ -76,4 +77,7 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(UserActions, dispatch);
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SignIn));
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SignIn));

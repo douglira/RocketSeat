@@ -4,14 +4,14 @@ import { Tooltip } from 'antd';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Creators as NotificationActions } from 'store/ducks/notification';
+import { Creators as UserActions } from 'store/ducks/user';
 
-import { api } from 'services/api';
 import { Container, Actions } from './styles';
 
 class FriendNotifications extends Component {
   static propTypes = {
-    pushNotification: PropTypes.func.isRequired,
+    acceptFriendRequest: PropTypes.func.isRequired,
+    declineFriendRequest: PropTypes.func.isRequired,
     onSelected: PropTypes.func.isRequired,
     friendsRequest: PropTypes.arrayOf(PropTypes.shape({
       _id: PropTypes.string,
@@ -21,39 +21,13 @@ class FriendNotifications extends Component {
   };
 
   acceptRequest = async (id) => {
-    try {
-      await api.post(`/friend/${id}`);
-      this.props.onSelected();
-      this.props.pushNotification({
-        text: 'Agora vocês são amigos',
-        topic: 'success',
-      });
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível aceitar a solicitação de amizade. Tente novamente',
-        topic: 'error',
-      });
-    }
+    this.props.acceptFriendRequest(id);
+    this.props.onSelected();
   };
 
   declineRequest = async (id) => {
-    try {
-      await api.put(`/friend/${id}/request/decline`);
-      this.props.onSelected();
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível recusar a solicitação de amizade. Tente novamente',
-        topic: 'error',
-      });
-    }
+    this.props.declineFriendRequest(id);
+    this.props.onSelected();
   };
 
   render() {
@@ -96,7 +70,7 @@ const mapStateToProps = ({ user }) => ({
   friendsRequest: user.data.friendsRequest,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(NotificationActions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(UserActions, dispatch);
 
 export default connect(
   mapStateToProps,

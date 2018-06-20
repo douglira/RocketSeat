@@ -22,6 +22,11 @@ export const Types = {
 
   REALTIME_EDIT_REQUEST: 'user/REALTIME_EDIT_REQUEST',
   REALTIME_EDIT_SUCCESS: 'user/REALTIME_EDIT_SUCCESS',
+
+  SEND_FRIEND_REQUEST: 'user/SEND_FRIEND_REQUEST',
+  ACCEPT_FRIEND_REQUEST: 'user/ACCEPT_FRIEND_REQUEST',
+  DECLINE_FRIEND_REQUEST: 'user/DECLINE_FRIEND_REQUEST',
+  REMOVE_FRIEND: 'user/REMOVE_FRIEND',
 };
 
 export const Creators = {
@@ -104,6 +109,26 @@ export const Creators = {
   realtimeEditUserSuccess: user => ({
     type: Types.REALTIME_EDIT_SUCCESS,
     payload: { user },
+  }),
+
+  sendFriendRequest: id => ({
+    type: Types.SEND_FRIEND_REQUEST,
+    payload: { id },
+  }),
+
+  acceptFriendRequest: id => ({
+    type: Types.ACCEPT_FRIEND_REQUEST,
+    payload: { id },
+  }),
+
+  declineFriendRequest: id => ({
+    type: Types.DECLINE_FRIEND_REQUEST,
+    payload: { id },
+  }),
+
+  removeFriend: id => ({
+    type: Types.REMOVE_FRIEND,
+    payload: { id },
   }),
 };
 

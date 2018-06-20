@@ -4,9 +4,14 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   flex: 1;
   padding-top: 100px;
+
+  img {
+    height: 230px;
+    border-radius: 5px 0 0 5px;
+  }
 
   form {
     display: flex;
@@ -15,14 +20,16 @@ export const Container = styled.div`
     align-items: center;
     width: 100%px;
     max-width: 350px;
-    background: #f9f9f9;
-    border-radius: 5px;
+    height: 230px;
+    background: #fff;
+    border-radius: 0 5px 5px 0;
     padding: 30px;
     box-sizing: border-box;
 
     & > * {
       align-self: stretch;
     }
+
 
     input {
       padding: 10px 20px;

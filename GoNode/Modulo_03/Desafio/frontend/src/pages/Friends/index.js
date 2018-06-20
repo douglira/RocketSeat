@@ -6,20 +6,18 @@ import { Collapse, Tooltip } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as NotificationActions } from 'store/ducks/notification';
+import { Creators as UserActions } from 'store/ducks/user';
 
 import { api } from 'services/api';
 
-import {
-  Container,
-  HeaderCollapse,
-  FriendCard,
-  AntdPainel,
-  AntdCollapse,
-} from './styles';
+import { Container, HeaderCollapse, FriendCard, AntdPainel, AntdCollapse } from './styles';
 
 class Friends extends Component {
   static propTypes = {
     pushNotification: PropTypes.func.isRequired,
+    removeFriend: PropTypes.func.isRequired,
+    acceptFriendRequest: PropTypes.func.isRequired,
+    declineFriendRequest: PropTypes.func.isRequired,
     friendsRequest: PropTypes.arrayOf(PropTypes.shape({
       _id: PropTypes.string,
       avatar_url: PropTypes.string,
@@ -58,60 +56,16 @@ class Friends extends Component {
     }
   };
 
-  removeFriend = async (friendId) => {
-    try {
-      await api.delete(`/friend/${friendId}`);
-      this.fetchFriendList();
-      this.props.pushNotification({
-        text: 'Agora vocês não são mais amigos',
-        topic: 'success',
-      });
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível remover amizade',
-        topic: 'error',
-      });
-    }
+  removeFriend = async (id) => {
+    this.props.removeFriend(id);
   };
 
   acceptRequest = async (id) => {
-    try {
-      await api.post(`/friend/${id}`);
-      this.fetchFriendList();
-      this.props.pushNotification({
-        text: 'Agora vocês são amigos',
-        topic: 'success',
-      });
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível aceitar a solicitação de amizade. Tente novamente',
-        topic: 'error',
-      });
-    }
+    this.props.acceptFriendRequest(id);
   };
 
   declineRequest = async (id) => {
-    try {
-      await api.put(`/friend/${id}/request/decline`);
-      this.fetchFriendList();
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível recusar a solicitação de amizade. Tente novamente',
-        topic: 'error',
-      });
-    }
+    this.props.declineFriendRequest(id);
   };
 
   render() {
@@ -148,12 +102,12 @@ class Friends extends Component {
                     </section>
                     <Tooltip title="Aceitar" placement="left">
                       <button onClick={() => this.acceptRequest(friend._id)}>
-                        <i className="fa fa-check-circle fa-lg" style={{ color: '#15d8a5' }} />
+                        <i className="fa fa-check fa-lg" style={{ color: '#15d8a5' }} />
                       </button>
                     </Tooltip>
                     <Tooltip title="Recusar" placement="left">
                       <button onClick={() => this.declineRequest(friend._id)}>
-                        <i className="fa fa-times-circle fa-lg" style={{ color: 'tomato' }} />
+                        <i className="fa fa-minus fa-lg" style={{ color: 'tomato' }} />
                       </button>
                     </Tooltip>
                   </FriendCard>
@@ -180,7 +134,7 @@ class Friends extends Component {
                   </section>
                   <Tooltip title="Desfazer amizade" placement="left">
                     <button onClick={() => this.removeFriend(friend._id)}>
-                      <i className="fa fa-times-circle fa-lg" style={{ color: 'tomato' }} />
+                      <i className="fa fa-user-times fa-lg" style={{ color: 'tomato' }} />
                     </button>
                   </Tooltip>
                 </FriendCard>
@@ -197,7 +151,8 @@ const mapStateToProps = ({ user }) => ({
   friendsRequest: user.data.friendsRequest,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(NotificationActions, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ ...NotificationActions, ...UserActions }, dispatch);
 
 export default withRouter(connect(
   mapStateToProps,

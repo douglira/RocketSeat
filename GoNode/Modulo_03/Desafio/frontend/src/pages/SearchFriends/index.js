@@ -4,6 +4,7 @@ import { Tooltip } from 'antd';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Creators as UserActions } from 'store/ducks/user';
 import { Creators as NotificationActions } from 'store/ducks/notification';
 
 import { api } from 'services/api';
@@ -13,6 +14,10 @@ import { Container, FormSearch } from './styles';
 class SearchFriends extends Component {
   static propTypes = {
     pushNotification: PropTypes.func.isRequired,
+    sendFriendRequest: PropTypes.func.isRequired,
+    acceptFriendRequest: PropTypes.func.isRequired,
+    declineFriendRequest: PropTypes.func.isRequired,
+    removeFriend: PropTypes.func.isRequired,
   };
 
   state = {
@@ -40,80 +45,20 @@ class SearchFriends extends Component {
     }
   };
 
-  removeFriend = async (friendId) => {
-    try {
-      await api.delete(`/friend/${friendId}`);
-      this.search();
-      this.props.pushNotification({
-        text: 'Agora vocês não são mais amigos',
-        topic: 'success',
-      });
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível remover amizade',
-        topic: 'error',
-      });
-    }
+  removeFriend = async (id) => {
+    this.props.removeFriend(id);
   };
 
   acceptFriendRequest = async (id) => {
-    try {
-      await api.post(`/friend/${id}`);
-      this.search();
-      this.props.pushNotification({
-        text: 'Agora vocês são amigos',
-        topic: 'success',
-      });
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível aceitar a solicitação de amizade. Tente novamente',
-        topic: 'error',
-      });
-    }
+    this.props.acceptFriendRequest(id);
   };
 
   declineFriendRequest = async (id) => {
-    try {
-      await api.put(`/friend/${id}/request/decline`);
-      this.search();
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível recusar ou cancelar a solicitação de amizade. Tente novamente',
-        topic: 'error',
-      });
-    }
+    this.props.declineFriendRequest(id);
   };
 
   sendFriendRequest = async (id) => {
-    try {
-      await api.post(`/friend/${id}/request`);
-      this.search();
-      this.props.pushNotification({
-        text: 'Solicitação de amizade enviada com sucesso',
-        topic: 'success',
-      });
-    } catch (err) {
-      if (err.response.data && err.response.data.error) {
-        this.props.pushNotification({ text: err.response.data.error, topic: 'error' });
-        return;
-      }
-      this.props.pushNotification({
-        text: 'Não foi possível recusar a solicitação de amizade. Tente novamente',
-        topic: 'error',
-      });
-    }
+    this.props.sendFriendRequest(id);
   };
 
   renderActions = (user) => {
@@ -209,7 +154,8 @@ const mapStateToProps = state => ({
   me: state.user.data,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(NotificationActions, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ ...UserActions, ...NotificationActions }, dispatch);
 
 export default connect(
   mapStateToProps,

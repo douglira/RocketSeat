@@ -26,7 +26,7 @@ module.exports = {
     try {
       const user = await User.findByIdAndUpdate(
         req.userId,
-        { ...req.body },
+        { ...req.user },
         { new: true },
       ).populate({
         path: 'friendsRequest',

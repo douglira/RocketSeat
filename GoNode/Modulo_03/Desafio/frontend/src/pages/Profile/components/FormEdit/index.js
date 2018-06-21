@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Switch } from 'antd';
 import PropTypes from 'prop-types';
 import { NavLink, withRouter } from 'react-router-dom';
+import Dropzone from 'react-dropzone';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,6 +14,7 @@ class FormEdit extends Component {
   static propTypes = {
     updateProfileRequest: PropTypes.func.isRequired,
     user: PropTypes.shape({
+      _id: PropTypes.string,
       name: PropTypes.string,
       gender: PropTypes.string,
       birthday: PropTypes.string,
@@ -29,6 +31,10 @@ class FormEdit extends Component {
 
   state = {
     enableFields: false,
+    file: {
+      name: '',
+      preview: '',
+    },
     form: {
       name: '',
       gender: '',
@@ -49,16 +55,30 @@ class FormEdit extends Component {
     this.setState({ form });
   };
 
+  onDrop = (file) => {
+    this.setState({ file: file[0] });
+  };
+
   handleOnSubmit = (e) => {
     e.preventDefault();
 
-    const form = { birthday: new Date(this.state.form.birthday), ...this.state.form };
+    const data = { birthday: new Date(this.state.form.birthday), ...this.state.form };
+
+    const form = new FormData();
+    Object.entries(data).forEach(([fieldname, value]) => {
+      form.append(fieldname, value);
+    });
+
+    if (this.state.file.preview) {
+      form.append('avatar', this.state.file);
+    }
+
     this.props.updateProfileRequest(form);
   };
 
-  populate() {
+  populate = () => {
     this.setState({ form: { ...this.props.user } });
-  }
+  };
 
   render() {
     return (
@@ -66,7 +86,9 @@ class FormEdit extends Component {
         <div>
           <Switch size="small" onChange={enableFields => this.setState({ enableFields })} />
           <span>Habilitar edição do perfil</span>
-          <NavLink to={`/app/profile/${this.props.match.params.id}/change_password`}>Alterar senha?</NavLink>
+          <NavLink to={`/app/profile/${this.props.match.params.id}/change_password`}>
+            Alterar senha?
+          </NavLink>
         </div>
         <label htmlFor="name">
           Nome
@@ -136,6 +158,19 @@ class FormEdit extends Component {
             <option value="EUA">Estados Unidos</option>
           </select>
         </label>
+        <section>
+          <div className="dropzone">
+            <Dropzone onDrop={this.onDrop} multiple={false}>
+              <p>Alterar foto</p>
+            </Dropzone>
+          </div>
+          {!!this.state.file.preview && (
+            <img
+              src={this.state.file.preview}
+              alt={`${this.props.user._id}-${this.state.file.name}`}
+            />
+          )}
+        </section>
         <button type="submit" disabled={!this.state.enableFields}>
           Salvar alterações
         </button>
@@ -146,6 +181,7 @@ class FormEdit extends Component {
 
 const mapStateToProps = ({ user: { data } }) => ({
   user: {
+    _id: data._id,
     name: data.name,
     gender: data.gender,
     birthday: data.birthday,

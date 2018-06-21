@@ -6,13 +6,13 @@ export const Form = styled.form`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding: 20px 40px;
 
   div {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    width: 80%;
+    width: 100%;
     padding-bottom: 15px;
     border-bottom: 0.75px solid #bbb;
 
@@ -30,7 +30,7 @@ export const Form = styled.form`
 
   label {
     align-self: center;
-    width: 80%;
+    width: 100%;
     margin-top: 15px;
     font-size: 14px;
 
@@ -50,7 +50,7 @@ export const Form = styled.form`
 
   button {
     font-size: 14px;
-    width: 80%;
+    width: 100%;
     background: #15d8a5;
     color: #fff;
     font-weight: 600;
@@ -62,6 +62,43 @@ export const Form = styled.form`
 
     &:hover {
       background: #0dbf91;
+    }
+  }
+
+  section {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-self: stretch;
+    margin-top: 15px;
+
+    & div {
+      border: 0;
+      padding: 0;
+
+      & div {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+        align-self: stretch;
+        border: 2px dashed #8d70ff !important;
+        border-radius: 3px !important;
+        height: 128px !important;
+        cursor: pointer;
+
+        p {
+          font-size: 14px;
+          color: #333;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    img {
+      height: 128px;
+      flex: 1;
+      margin-left: 5px;
     }
   }
 `;

@@ -5,11 +5,11 @@ export const Post = styled.div`
   flex: 1;
   flex-direction: column;
   margin: 20px 0;
-  border-radius: 6px;
+  border-radius: 3px;
   background: #e1e1e1;
   padding: 10px;
   box-sizing: border-box;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  /* box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); */
 
   div {
     display: flex;

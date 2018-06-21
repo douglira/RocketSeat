@@ -3,6 +3,7 @@ import { api } from 'services/api';
 
 import { Types as UserTypes, Creators as UserActions } from 'store/ducks/user';
 import { Creators as NotificationActions } from 'store/ducks/notification';
+import { Creators as PostsActions } from 'store/ducks/posts';
 
 function* authentication(action) {
   try {
@@ -27,7 +28,9 @@ function* authentication(action) {
 
 function* update(action) {
   try {
-    const { data } = yield call(api.put, '/user/profile', action.payload.user);
+    const { data } = yield call(api.put, '/user/profile', action.payload.user, {
+      headers: { 'Content-type': 'multipart/form-data' },
+    });
 
     put(UserActions.updateProfileSuccess(data));
   } catch (err) {
@@ -104,8 +107,9 @@ function* realtimeEdit() {
     const { data: user } = yield call(api.get, '/user/me');
 
     yield put(UserActions.realtimeEditUserSuccess(user));
+    yield put(PostsActions.postsRequest());
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 }
 

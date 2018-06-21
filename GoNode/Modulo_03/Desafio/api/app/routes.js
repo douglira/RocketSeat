@@ -5,6 +5,7 @@ const routes = express.Router();
 
 const authMiddleware = require('./middlewares/auth');
 const errorMiddleware = require('./middlewares/error');
+const uploaderMiddleware = require('./middlewares/uploader');
 
 const controllers = requireDir('./controllers');
 
@@ -21,7 +22,7 @@ routes.use(authMiddleware);
  * User
  */
 routes.get('/user/me', controllers.userController.me);
-routes.put('/user/profile', controllers.userController.updateProfile);
+routes.put('/user/profile', uploaderMiddleware, controllers.userController.updateProfile);
 routes.put('/user/password', controllers.userController.updatePassword);
 routes.get('/user/profile/:id', controllers.userController.profile);
 routes.get('/users', controllers.userController.search);

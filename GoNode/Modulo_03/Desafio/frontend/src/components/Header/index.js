@@ -97,15 +97,21 @@ class Header extends Component {
 
     if (/\/app\/profile\//.test(location.pathname) && friendId !== user._id) {
       return loading ? (
-        <i className="fa fa-spinner fa-pulse fa-lg" />
+        <i className="fa fa-spinner fa-pulse" />
       ) : (
         <ContainerInfo>
           <div>
             <img src={friend.avatar_url} alt={friend.name} />
             <p>{friend.name}</p>
-            <span>
+            <span style={{ color: '#8d70ff', fontSize: '16px', marginBottom: '10px' }}>
               {friend.city}, {friend.state}
             </span>
+            {friend.commonFriends && friend.commonFriends.count ? (
+              <span style={{ marginBottom: '10px' }}>
+                {friend.commonFriends.count} {friend.commonFriends.count === 1 ? 'amigo' : 'amigos'}{' '}
+                em comum
+              </span>
+            ) : null}
           </div>
         </ContainerInfo>
       );

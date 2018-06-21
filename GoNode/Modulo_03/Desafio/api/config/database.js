@@ -6,9 +6,10 @@ module.exports = {
   options: {
     reconnectTries: Number.MAX_VALUE,
     reconnectInterval: 500,
-    poolSize: 10,
+    poolSize: 30,
     keepAlive: true,
     socketTimeoutMS: 0,
     connectTimeoutMS: 0,
+    numberOfRetries: 20,
   },
 };

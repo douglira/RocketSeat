@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import Notification from 'components/Notification';
 
 import Login from 'pages/SignIn';
+import Signup from 'pages/Signup';
 import Main from 'pages/Main';
 
 const Routes = () => (
@@ -12,6 +13,7 @@ const Routes = () => (
       <Notification />
       <Switch>
         <Route exact path="/login" component={Login} />
+        <Route exact path="/signup" component={Signup} />
         <Route path="/app" component={Main} />
         <Route render={() => <Redirect to="/login" />} />
       </Switch>

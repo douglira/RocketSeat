@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as UserActions } from 'store/ducks/user';
 
-import logo from 'assets/images/logo-2.png';
+import logo from 'assets/images/logo-2.jpg';
 import { Container } from './styles';
 
 class SignIn extends Component {
@@ -64,6 +64,7 @@ class SignIn extends Component {
             onChange={this.handleChange('password')}
           />
           <button type="submit">Entrar</button>
+          <Link to="/signup" >Criar conta</Link>
         </form>
       </Container>
     );

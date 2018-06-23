@@ -69,7 +69,10 @@ export const Animations = {
 
 export const Container = styled.div`
   position: absolute;
-  top: 25px;
+  top: ${() => {
+    const position = window.pageYOffset + 25;
+    return `${position}px`;
+  }};
   left: 25px;
   max-width: 380px;
   background: ${props => (props.topic === 'success' ? '#16ca00' : '#ff5252')};

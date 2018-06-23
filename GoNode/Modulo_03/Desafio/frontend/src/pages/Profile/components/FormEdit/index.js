@@ -33,7 +33,7 @@ class FormEdit extends Component {
     form: {
       name: '',
       gender: '',
-      birthday: '',
+      birthday: new Date(),
       city: '',
       state: '',
       country: '',

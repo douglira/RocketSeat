@@ -64,49 +64,4 @@ export const Form = styled.form`
       background: #0dbf91;
     }
   }
-
-  section {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-self: stretch;
-    margin-top: 15px;
-
-    & div {
-      border: 0;
-      padding: 0;
-
-      & div {
-        display: flex;
-        flex: 1;
-        justify-content: center;
-        align-items: center;
-        align-self: stretch;
-        border: 2px dashed #8d70ff !important;
-        border-radius: 3px !important;
-        height: 128px !important;
-        cursor: pointer;
-
-        p {
-          font-size: 14px;
-          color: #333;
-          vertical-align: middle;
-        }
-      }
-    }
-
-    img {
-      height: 128px;
-      flex: 1;
-      margin-left: 5px;
-    }
-  }
-`;
-
-export const ModalContainer = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  padding-top: 20px;
 `;

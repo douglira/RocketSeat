@@ -25,9 +25,9 @@ export const Form = styled.form`
     padding: 10px;
     color: #8d70ff;
     background: #f9f9f9;
-    cursor: pointer;
     font-size: 18px;
     border-radius: 3px;
+    cursor: pointer;
 
     &:hover {
       background: #e0e0e0;
@@ -40,7 +40,6 @@ export const Form = styled.form`
     align-self: stretch;
     background: #f9f9f9;
     color: #8d70ff;
-    font-weight: 600;
     border-radius: 3px;
     cursor: pointer;
 

@@ -8,6 +8,11 @@ module.exports = (req, res, next) => {
     return form.parse(req, async (err, fields, files) => {
       if (err) return next(err);
 
+      if (!files.length) {
+        req.user = fields;
+        return next();
+      }
+
       const host = process.env.SERVER_HOST;
       const port = process.env.SERVER_PORT;
       const protocol = process.env.SERVER_SSL ? process.env.SERVER_SSL : 'http';

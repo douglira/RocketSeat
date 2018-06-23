@@ -8,10 +8,12 @@ import { bindActionCreators } from 'redux';
 import { Creators as PostActions } from 'store/ducks/posts';
 import { Creators as UserActions } from 'store/ducks/user';
 
-import { ContainerInfo, Container } from './styles';
-
+import UpdateAvatar from 'components/UpdateAvatar';
 import PostNotifications from './components/PostNotifications';
 import FriendNotifications from './components/FriendNotifications';
+
+import { ContainerInfo, Container } from './styles';
+
 
 class Header extends Component {
   static propTypes = {
@@ -188,7 +190,13 @@ class Header extends Component {
         </nav>
         <ContainerInfo>
           <div>
-            <img src={this.props.user.avatar_url} alt={this.props.user.name} />
+            {location.pathname === `/app/profile/${user._id}` ? (
+              <UpdateAvatar>
+                <img src={this.props.user.avatar_url} alt={this.props.user.name} />
+              </UpdateAvatar>
+            ) : (
+              <img src={this.props.user.avatar_url} alt={this.props.user.name} />
+            )}
             <p>{this.props.user.name}</p>
           </div>
           {location.pathname === `/app/profile/${user._id}` || (

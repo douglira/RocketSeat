@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Switch, Modal } from 'antd';
+import { Switch } from 'antd';
 import PropTypes from 'prop-types';
 import { NavLink, withRouter } from 'react-router-dom';
-import Dropzone from 'react-dropzone';
-import ReactCrop, { makeAspectCrop } from 'react-image-crop';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as UserActions } from 'store/ducks/user';
-import { Form, ModalContainer } from './styles';
+import { Form } from './styles';
 
 class FormEdit extends Component {
   static propTypes = {
@@ -32,20 +30,7 @@ class FormEdit extends Component {
 
   state = {
     enableFields: false,
-    modalVisible: false,
-    image: null,
-    filename: '',
-    src: '',
-    pixelCrop: {},
-    crop: {
-      x: 10,
-      y: 10,
-      width: 64,
-      height: 64,
-      aspect: 1,
-    },
     form: {
-      avatar: null,
       name: '',
       gender: '',
       birthday: '',
@@ -65,85 +50,21 @@ class FormEdit extends Component {
     this.setState({ form });
   };
 
-  onDrop = (file) => {
-    this.setState({ src: file[0].preview, filename: file[0].name, modalVisible: true });
-  };
-
-  onCropChange = (crop) => {
-    this.setState({ crop });
-  };
-
-  onCropComplete = (crop, pixelCrop) => {
-    this.setState({ pixelCrop });
-  };
-
-  onImageLoaded = (image) => {
-    this.setState({
-      image,
-      crop: makeAspectCrop(
-        {
-          x: 25,
-          y: 0,
-          aspect: 1,
-          width: 64,
-        },
-        image.width / image.height,
-      ),
-    });
-  };
-
   handleOnSubmit = (e) => {
     e.preventDefault();
 
     const data = { birthday: new Date(this.state.form.birthday), ...this.state.form };
 
     const form = new FormData();
-    Object.entries(data).forEach(([fieldname, value]) => {
-      form.append(fieldname, value);
+    Object.keys(data).forEach((fieldname) => {
+      form.append(fieldname, data[fieldname]);
     });
-
-    if (this.state.form.avatar) {
-      form.append('avatar', this.state.form.avatar);
-    }
 
     this.props.updateProfileRequest(form);
   };
 
   populate = () => {
     this.setState({ form: { ...this.props.user } });
-  };
-
-  handleOk = () => {
-    const { pixelCrop, image, filename } = this.state;
-    const canvas = document.createElement('canvas');
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
-    const ctx = canvas.getContext('2d');
-
-    ctx.drawImage(
-      image,
-      pixelCrop.x,
-      pixelCrop.y,
-      pixelCrop.width,
-      pixelCrop.height,
-      0,
-      0,
-      pixelCrop.width,
-      pixelCrop.height,
-    );
-    canvas.toBlob((blob) => {
-      const form = { ...this.state.form };
-      form.avatar = blob;
-      form.avatar = new File([form.avatar], filename, { type: 'image/jpeg' });
-      form.avatar.preview = URL.createObjectURL(form.avatar);
-      this.setState({ form });
-    }, 'image/jpeg');
-
-    this.setState({ modalVisible: false });
-  };
-
-  handleCancel = () => {
-    this.setState({ modalVisible: false, form: { avatar: null, ...this.state.form } });
   };
 
   render() {
@@ -224,29 +145,9 @@ class FormEdit extends Component {
             <option value="EUA">Estados Unidos</option>
           </select>
         </label>
-        <section>
-          <div className="dropzone">
-            <Dropzone onDrop={this.onDrop} multiple={false}>
-              <p>Alterar foto</p>
-            </Dropzone>
-          </div>
-        </section>
         <button type="submit" disabled={!this.state.enableFields}>
           Salvar alterações
         </button>
-        <Modal visible={this.state.modalVisible} onOk={this.handleOk} onCancel={this.handleCancel}>
-          <ModalContainer>
-            {this.state.src && (
-              <ReactCrop
-                src={this.state.src}
-                crop={this.state.crop}
-                onChange={this.onCropChange}
-                onComplete={this.onCropComplete}
-                onImageLoaded={this.onImageLoaded}
-              />
-            )}
-          </ModalContainer>
-        </Modal>
       </Form>
     );
   }

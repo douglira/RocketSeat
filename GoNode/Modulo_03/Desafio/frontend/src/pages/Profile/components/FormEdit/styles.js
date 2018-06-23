@@ -102,3 +102,11 @@ export const Form = styled.form`
     }
   }
 `;
+
+export const ModalContainer = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+`;

@@ -18,4 +18,10 @@ injectGlobal`
     text-rendering: optimizeLegibility !important;
     -webkit-font-smoothing: antialiased !important;
   }
+
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
 `;

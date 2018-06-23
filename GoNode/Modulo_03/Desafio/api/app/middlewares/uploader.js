@@ -8,18 +8,23 @@ module.exports = (req, res, next) => {
     return form.parse(req, async (err, fields, files) => {
       if (err) return next(err);
 
+      const host = process.env.SERVER_HOST;
+      const port = process.env.SERVER_PORT;
+      const protocol = process.env.SERVER_SSL ? process.env.SERVER_SSL : 'http';
+
       const filePath = `${req.userId}-${files.avatar.name}`;
       const oldPath = files.avatar.path;
       const newPath = `${path.resolve('uploads')}/${filePath}`;
+
       fs.rename(oldPath, newPath, (errRename) => {
-        if (errRename) return next(errRename);
+        if (errRename) throw Error(errRename);
 
         return console.log('Uploaded');
       });
 
       const user = {
         ...fields,
-        avatar_url: `http://localhost:${process.env.SERVER_PORT}/${filePath}`,
+        avatar_url: `${protocol}://${host}:${port}/${filePath}`,
       };
 
       req.user = user;

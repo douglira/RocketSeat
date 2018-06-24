@@ -15,10 +15,7 @@ const { url, modelsPath, options } = require('./config/database');
 
 const port = process.env.SERVER_PORT || 3000;
 
-mongoose.connect(
-  url,
-  options,
-);
+mongoose.connect(url, options);
 requireDir(modelsPath);
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));

@@ -13,7 +13,7 @@ const createAppropriateStore =
   process.env.NODE_ENV === 'development' ? console.tron.createStore : createStore;
 
 const middlewares = [sagaMiddleware];
-const store = createAppropriateStore(() => { }, compose(applyMiddleware(...middlewares)));
+const store = createAppropriateStore(reducers, compose(applyMiddleware(...middlewares)));
 
 sagaMiddleware.run(sagas);
 

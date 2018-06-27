@@ -1,5 +1,6 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import { api } from 'services/api';
+import { toast } from 'react-toastify';
 
 import { Types as UsersTypes, Creators as UsersActions } from 'store/ducks/users';
 
@@ -23,7 +24,12 @@ function* search(action) {
 
     yield put(UsersActions.addUserSuccess(user));
   } catch (err) {
-    console.log(err);
+    if (err.response.status === 404) {
+      toast.error('Usuário não encontrado');
+      return;
+    }
+
+    toast.error('Um erro inesperado aconteceu. Tente novamente');
   }
 }
 

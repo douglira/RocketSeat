@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
+  display: ${props => (props.show ? 'flex' : 'none')};
   flex: 1;
   width: 100%;
   height: 100%;
   position: absolute;
   float: right;
-  z-index: 3;
+  z-index: 2;
   background-color: rgba(0, 0, 0, 0.6);
 
   div {

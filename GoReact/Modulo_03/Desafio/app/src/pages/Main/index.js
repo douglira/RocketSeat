@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactMapGL from 'react-map-gl';
+import { toast } from 'react-toastify';
 
 import { connect } from 'react-redux';
 import { Creators as UsersActions } from 'store/ducks/users';
@@ -45,7 +46,7 @@ class Main extends Component {
     viewport.height = window.innerHeight;
 
     this.setState({ viewport });
-  }
+  };
 
   handleClick = (event) => {
     const { lngLat: coordinates } = event;
@@ -54,21 +55,38 @@ class Main extends Component {
   };
 
   initialLocation = () => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const viewport = { ...this.state.viewport };
-      viewport.latitude = pos.coords.latitude;
-      viewport.longitude = pos.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const viewport = { ...this.state.viewport };
+        viewport.latitude = pos.coords.latitude;
+        viewport.longitude = pos.coords.longitude;
 
-      this.setState({ viewport });
-    });
+        this.setState({ viewport });
+      },
+      () => {
+        this.setState({
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            latitude: -23.534698840340308,
+            longitude: -46.21378454622057,
+            zoom: 13,
+          },
+        });
+      },
+    );
   };
 
   handleModalOk = () => {
     const { modalInput: text, coordinates } = this.state;
 
+    if (!text) {
+      return toast.error('Preenchimento obrigatório');
+    }
+
     this.props.addUserRequest(text, coordinates);
 
-    this.setState({ modalVisible: false, modalInput: '' });
+    return this.setState({ modalVisible: false, modalInput: '' });
   };
 
   handleModalCancel = () => {
@@ -94,6 +112,7 @@ class Main extends Component {
           {...this.state.viewport}
           onViewportChange={viewport => this.setState({ viewport })}
           mapboxApiAccessToken={MAPBOX_TOKEN}
+          mapStyle="mapbox://styles/mapbox/streets-v10"
           onClick={this.handleClick}
         />
       </Container>

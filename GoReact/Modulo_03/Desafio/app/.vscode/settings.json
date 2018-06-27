@@ -3,6 +3,6 @@
   "eslint.autoFixOnSave": true,
   "eslint.alwaysShowStatus": true,
   "editor.formatOnSave": true,
-  "javascript.format.enable": false,
+  "javascript.format.enable": true,
   "prettier.eslintIntegration": true
 }

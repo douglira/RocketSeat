@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 import 'config/reactotron';
 import 'styles/global';
 
@@ -9,7 +10,10 @@ import Main from 'pages/Main';
 
 const App = () => (
   <Provider store={store}>
-    <Main />
+    <Fragment>
+      <ToastContainer autoClose={3500} />
+      <Main />
+    </Fragment>
   </Provider>
 );
 

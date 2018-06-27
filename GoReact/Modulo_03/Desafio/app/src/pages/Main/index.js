@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, { Marker } from 'react-map-gl';
 import { toast } from 'react-toastify';
 
 import { connect } from 'react-redux';
@@ -11,11 +11,21 @@ import { MAPBOX_TOKEN } from 'config/mapbox';
 import Modal from 'components/Modal';
 import Sidebar from 'components/Sidebar';
 
-import { Container } from './styles';
+import { Container, IconUser } from './styles';
 
 class Main extends Component {
   static propTypes = {
     addUserRequest: PropTypes.func.isRequired,
+    users: PropTypes.shape({
+      data: PropTypes.arrayOf(PropTypes.shape({
+        avatar: PropTypes.string,
+        login: PropTypes.string,
+        coords: PropTypes.shape({
+          lng: PropTypes.number,
+          lat: PropTypes.number,
+        }),
+      })),
+    }).isRequired,
   };
 
   constructor(props) {
@@ -78,13 +88,16 @@ class Main extends Component {
   };
 
   handleModalOk = () => {
-    const { modalInput: text, coordinates } = this.state;
+    const {
+      modalInput: text,
+      coordinates: [lng, lat],
+    } = this.state;
 
     if (!text) {
       return toast.error('Preenchimento obrigatório');
     }
 
-    this.props.addUserRequest(text, coordinates);
+    this.props.addUserRequest(text, { lng, lat });
 
     return this.setState({ modalVisible: false, modalInput: '' });
   };
@@ -93,9 +106,17 @@ class Main extends Component {
     this.setState({ modalVisible: false });
   };
 
-  focusOnMap = (coordinates) => {
-    console.log(coordinates);
+  focusOnMap = (_coords) => {
+    // focar usuário
   };
+
+  renderMarkers = () =>
+    !this.props.users.data.length ||
+    this.props.users.data.map(user => (
+      <Marker key={user.id} latitude={user.coords.lat} longitude={user.coords.lng}>
+        <IconUser src={user.avatar} alt={user.login} />
+      </Marker>
+    ));
 
   render() {
     return (
@@ -114,7 +135,12 @@ class Main extends Component {
           mapboxApiAccessToken={MAPBOX_TOKEN}
           mapStyle="mapbox://styles/mapbox/streets-v10"
           onClick={this.handleClick}
-        />
+          ref={(map) => {
+            this.map = map;
+          }}
+        >
+          {this.renderMarkers()}
+        </ReactMapGL>
       </Container>
     );
   }

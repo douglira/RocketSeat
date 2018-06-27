@@ -18,26 +18,13 @@ class Sidebar extends Component {
     })).isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    window.addEventListener('resize', this.onResize);
-    this.state = {
-      heightContainer: window.innerHeight - 40,
-    };
-  }
-
-  onResize = () => {
-    const heightContainer = window.innerHeight - 40;
-    this.setState({ heightContainer });
-  };
-
   handleRemove = (id) => {
     this.props.removeUser(id);
   };
 
   render() {
     return (
-      <Container height={this.state.heightContainer}>
+      <Container>
         <nav>
           {this.props.users.length > 0 ? (
             this.props.users.map(user => (

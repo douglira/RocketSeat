@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  bottom: 20px;
   max-width: 320px;
   width: 100%;
-  max-height: ${props => `${props.height}px`};
-  height: 100%;
   padding: 20px;
-  margin: 20px;
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  position: absolute;
   box-sizing: border-box;
   z-index: 1;
 

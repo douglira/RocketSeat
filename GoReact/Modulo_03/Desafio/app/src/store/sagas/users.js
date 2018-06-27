@@ -6,7 +6,7 @@ import { Types as UsersTypes, Creators as UsersActions } from 'store/ducks/users
 
 function* search(action) {
   try {
-    const { text, coordinates } = action.payload;
+    const { text, coords } = action.payload;
     const {
       data: {
         id, name, login, avatar_url: avatar, url,
@@ -19,10 +19,11 @@ function* search(action) {
       login,
       avatar,
       url,
-      coordinates,
+      coords,
     };
 
     yield put(UsersActions.addUserSuccess(user));
+    toast.success('Usuario adicionado com sucesso');
   } catch (err) {
     if (err.response.status === 404) {
       toast.error('Usuário não encontrado');

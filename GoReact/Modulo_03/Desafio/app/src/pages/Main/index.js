@@ -106,8 +106,13 @@ class Main extends Component {
     this.setState({ modalVisible: false });
   };
 
-  focusOnMap = (_coords) => {
-    // focar usuário
+  focusOnMap = (coords) => {
+    const viewport = { ...this.state.viewport };
+
+    viewport.latitude = coords.lat;
+    viewport.longitude = coords.lng;
+
+    this.setState({ viewport });
   };
 
   renderMarkers = () =>

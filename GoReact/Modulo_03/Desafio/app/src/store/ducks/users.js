@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 export const Types = {
   ADD_REQUEST: 'user/ADD_REQUEST',
   ADD_SUCCESS: 'user/ADD_SUCCESS',
@@ -37,6 +39,8 @@ const INITIAL_STATE = {
 function remove(users, id) {
   const index = users.indexOf(user => user.id === id);
   users.splice(index, 1);
+
+  toast.info('Usuário removido', { autoClose: 1500 });
 
   return [...users];
 }

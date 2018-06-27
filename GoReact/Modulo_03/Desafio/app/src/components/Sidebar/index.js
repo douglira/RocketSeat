@@ -38,7 +38,7 @@ class Sidebar extends Component {
                   <Button danger onClick={() => this.handleRemove(user.id)}>
                     <i className="fa fa-times-circle" />
                   </Button>
-                  <Button onClick={() => this.props.focusOnMap(user.coordinates)}>
+                  <Button onClick={() => this.props.focusOnMap(user.coords)}>
                     <i className="fa fa-angle-right" />
                   </Button>
                 </Actions>

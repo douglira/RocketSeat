@@ -1,25 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import 'config/reactotron';
+
+import { store, persistor } from 'store';
+
+import Routes from './routes';
 
 const App = () => (
-  <View style={styles.container}>
-    <Text style={styles.welcome}>
-Welcome to React Native!
-    </Text>
-  </View>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <Routes />
+    </PersistGate>
+  </Provider>
 );
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-});
 
 export default App;

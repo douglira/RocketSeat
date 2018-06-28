@@ -26,10 +26,9 @@ const Routes = createStackNavigator(
   {
     navigationOptions: ({ navigation }) => {
       const { state } = navigation;
-      const { index } = state;
       let title;
 
-      switch (state.routes[index].key) {
+      switch (state.routes[state.index].key) {
         case 'Cart':
           title = 'Carrinho';
           break;

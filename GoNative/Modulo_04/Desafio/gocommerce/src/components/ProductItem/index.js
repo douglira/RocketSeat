@@ -3,39 +3,35 @@ import {
   TouchableOpacity, View, Text, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
-
-import { connect } from 'react-redux';
 
 import styles from './styles';
 
-const ProductItem = ({ product, loading }) => (
-  <TouchableOpacity style={styles.container} key={product.id}>
+const ProductItem = ({ navigation, product }) => (
+  <TouchableOpacity
+    style={styles.container}
+    key={product.id}
+    onPress={() => navigation.navigate('Details', { product })}
+  >
     <View style={styles.content}>
-      <ShimmerPlaceholder autoRun visible={!loading}>
-        <Image style={styles.image} source={{ uri: product.image }} />
-      </ShimmerPlaceholder>
-      <ShimmerPlaceholder autoRun visible={!loading}>
-        <Text style={styles.name}>
-          {product.name}
-        </Text>
-      </ShimmerPlaceholder>
-      <ShimmerPlaceholder autoRun visible={!loading}>
-        <Text style={styles.brand}>
-          {product.brand}
-        </Text>
-      </ShimmerPlaceholder>
-      <ShimmerPlaceholder autoRun visible={!loading}>
-        <Text style={styles.price}>
-          {product.price}
-        </Text>
-      </ShimmerPlaceholder>
+      <Image style={styles.image} source={{ uri: product.image }} />
+      <Text style={styles.name}>
+        {product.name}
+      </Text>
+      <Text style={styles.brand}>
+        {product.brand}
+      </Text>
+      <Text style={styles.price}>
+R$
+        {product.price}
+      </Text>
     </View>
   </TouchableOpacity>
 );
 
 ProductItem.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
   product: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
@@ -44,8 +40,4 @@ ProductItem.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = ({ products }) => ({
-  loading: products.loading,
-});
-
-export default connect(mapStateToProps)(ProductItem);
+export default ProductItem;

@@ -2,6 +2,8 @@ import { createBottomTabNavigator, createStackNavigator } from 'react-navigation
 
 import HomeScreen from 'screens/Home';
 import CartScreen from 'screens/Cart';
+import DetailsScreen from 'screens/Details';
+
 import { colors } from 'styles';
 
 const Routes = createStackNavigator(
@@ -22,19 +24,24 @@ const Routes = createStackNavigator(
         },
       },
     ),
+    Details: {
+      screen: DetailsScreen,
+    },
   },
   {
     navigationOptions: ({ navigation }) => {
       const { state } = navigation;
       let title;
 
-      switch (state.routes[state.index].key) {
-        case 'Cart':
-          title = 'Carrinho';
-          break;
-        default:
-          title = 'GoCommerce';
-          break;
+      if (state.routes) {
+        switch (state.routes[state.index].key) {
+          case 'Cart':
+            title = 'Carrinho';
+            break;
+          default:
+            title = 'GoCommerce';
+            break;
+        }
       }
 
       return {
@@ -47,6 +54,7 @@ const Routes = createStackNavigator(
         headerStyle: {
           height: 54,
         },
+        headerTintColor: colors.primary,
       };
     },
   },

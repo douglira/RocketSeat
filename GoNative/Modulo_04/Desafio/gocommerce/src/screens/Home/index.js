@@ -24,6 +24,7 @@ class Home extends Component {
     fetchCategories: PropTypes.func.isRequired,
     selectCategory: PropTypes.func.isRequired,
     unselectCategory: PropTypes.func.isRequired,
+    navigation: PropTypes.shape().isRequired,
     categories: PropTypes.shape({
       data: PropTypes.arrayOf(
         PropTypes.shape({
@@ -92,7 +93,7 @@ class Home extends Component {
   };
 
   render() {
-    const { categories, products } = this.props;
+    const { categories, products, navigation } = this.props;
 
     return (
       <View style={styles.container}>
@@ -112,7 +113,7 @@ class Home extends Component {
           data={products.data}
           extraData={products}
           keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => <ProductItem product={item} />}
+          renderItem={({ item }) => <ProductItem product={item} navigation={navigation} />}
           refreshControl={(
             <RefreshControl
               refreshing={products.loading}

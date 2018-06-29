@@ -34,10 +34,10 @@ function removeFromCart({ data }, id) {
 export default function cartReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.ADD_ITEM:
-      return { data: [...state.data, action.payload.item], quantity: state.data.length };
+      return { data: [...state.data, action.payload.item], quantity: state.data.length + 1 };
     case Types.REMOVE_ITEM:
       return removeFromCart(state, action.payload.id);
     default:
-      return { ...state, quantity: state.data.length };
+      return { ...state, quantity: state.data.length - 1 };
   }
 }

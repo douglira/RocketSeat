@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity,
+  View, Text, FlatList, TouchableOpacity, RefreshControl,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -11,6 +11,7 @@ import { Creators as ProductsActions } from 'store/ducks/products';
 
 import ProductItem from 'components/ProductItem';
 
+import { colors } from 'styles';
 import styles from './styles';
 
 class Home extends Component {
@@ -112,8 +113,13 @@ class Home extends Component {
           extraData={products}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => <ProductItem product={item} />}
-          onRefresh={this.fetchProducts}
-          refreshing={products.loading}
+          refreshControl={(
+            <RefreshControl
+              refreshing={products.loading}
+              onRefresh={this.fetchProducts}
+              colors={[colors.primary, colors.secundary]}
+            />
+          )}
           numColumns={2}
         />
       </View>

@@ -1,12 +1,13 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
 import { api } from 'services/api';
 
 import { Types as ProductsTypes, Creators as ProductsActions } from 'store/ducks/products';
 
 function* fetch(action) {
   try {
+    yield delay(3000);
     const { categoryId } = action.payload;
-    console.tron.log(categoryId);
 
     if (categoryId) {
       const {

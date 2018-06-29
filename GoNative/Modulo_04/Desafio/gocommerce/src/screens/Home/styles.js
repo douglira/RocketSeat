@@ -41,10 +41,17 @@ const styles = StyleSheet.create({
 
   textCategorySelected: {
     color: colors.white,
+    fontSize: 13,
   },
 
-  content: {
-    flex: 1,
+  containerProductList: {
+    padding: metrics.basePadding,
+    backgroundColor: colors.background,
+  },
+
+  columnContainerProduct: {
+    marginHorizontal: metrics.baseMargin,
+    justifyContent: 'space-between',
   },
 });
 

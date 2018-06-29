@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import { Creators as CategoriesActions } from 'store/ducks/categories';
 import { Creators as ProductsActions } from 'store/ducks/products';
 
+import ProductItem from 'components/ProductItem';
+
 import styles from './styles';
 
 class Home extends Component {
@@ -28,6 +30,12 @@ class Home extends Component {
           title: PropTypes.string,
         }),
       ),
+    }).isRequired,
+    products: PropTypes.shape({
+      data: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number,
+      })),
+      loading: PropTypes.bool,
     }).isRequired,
   };
 
@@ -83,19 +91,30 @@ class Home extends Component {
   };
 
   render() {
-    const { categories } = this.props;
+    const { categories, products } = this.props;
 
     return (
       <View style={styles.container}>
         <FlatList
-          showsHorizontalScrollIndicator={false}
           style={styles.tabBarCategoryWrapper}
           contentContainerStyle={styles.tabBarCategoryScroll}
           data={categories.data}
           extraData={categories}
           keyExtractor={item => String(item.id)}
           renderItem={this.renderCategoriesTabBar}
+          showsHorizontalScrollIndicator={false}
           horizontal
+        />
+        <FlatList
+          contentContainerStyle={styles.containerProductList}
+          columnWrapperStyle={styles.columnContainerProduct}
+          data={products.data}
+          extraData={products}
+          keyExtractor={item => String(item.id)}
+          renderItem={({ item }) => <ProductItem product={item} />}
+          onRefresh={this.fetchProducts}
+          refreshing={products.loading}
+          numColumns={2}
         />
       </View>
     );

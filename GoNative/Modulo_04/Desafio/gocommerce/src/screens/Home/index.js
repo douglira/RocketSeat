@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { Creators as CategoriesActions } from 'store/ducks/categories';
 import { Creators as ProductsActions } from 'store/ducks/products';
 
+import Toast from 'components/Toast';
 import ProductItem from 'components/ProductItem';
 
 import { colors } from 'styles';
@@ -32,11 +33,14 @@ class Home extends Component {
           title: PropTypes.string,
         }),
       ),
+      loading: PropTypes.bool,
     }).isRequired,
     products: PropTypes.shape({
-      data: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number,
-      })),
+      data: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number,
+        }),
+      ),
       loading: PropTypes.bool,
     }).isRequired,
   };
@@ -60,13 +64,14 @@ class Home extends Component {
     return selectCategory(categoryId);
   };
 
-
   fetchProducts = () => {
     const {
       fetchProducts,
+      fetchCategories,
       categories: { selected },
     } = this.props;
 
+    fetchCategories();
     fetchProducts(selected);
   };
 
@@ -97,6 +102,7 @@ class Home extends Component {
 
     return (
       <View style={styles.container}>
+        <Toast />
         <FlatList
           style={styles.tabBarCategoryWrapper}
           contentContainerStyle={styles.tabBarCategoryScroll}
@@ -120,7 +126,7 @@ class Home extends Component {
               onRefresh={this.fetchProducts}
               colors={[colors.primary, colors.secundary]}
             />
-          )}
+)}
           numColumns={2}
         />
       </View>

@@ -3,6 +3,7 @@ import { api } from 'services/api';
 
 import { Types as CategoriesTypes, Creators as CategoriesActions } from 'store/ducks/categories';
 import { Creators as ProductsActions } from 'store/ducks/products';
+import { Creators as ToastActions } from 'store/ducks/toast';
 
 function* fetch() {
   try {
@@ -10,7 +11,7 @@ function* fetch() {
 
     yield put(CategoriesActions.fetchCategoriesSuccess(data));
   } catch (err) {
-    yield put(CategoriesActions.fetchCategoriesFailure('Não foi possível importar as categorias'));
+    yield put(ToastActions.toastfyError('Não foi possível importar as categorias'));
   }
 }
 

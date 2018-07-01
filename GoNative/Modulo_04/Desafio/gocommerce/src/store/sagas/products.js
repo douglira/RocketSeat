@@ -1,12 +1,11 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
-import { delay } from 'redux-saga';
 import { api } from 'services/api';
 
 import { Types as ProductsTypes, Creators as ProductsActions } from 'store/ducks/products';
+import { Creators as ToastActions } from 'store/ducks/toast';
 
 function* fetch(action) {
   try {
-    yield delay(3000);
     const { categoryId } = action.payload;
 
     if (categoryId) {
@@ -21,7 +20,7 @@ function* fetch(action) {
       yield put(ProductsActions.fetchProductsSuccess(products));
     }
   } catch (err) {
-    yield put(ProductsActions.fetchProductsFailure('Não foi possível carregar os produtos'));
+    yield put(ToastActions.toastfyError('Não foi possível carregar os produtos'));
   }
 }
 

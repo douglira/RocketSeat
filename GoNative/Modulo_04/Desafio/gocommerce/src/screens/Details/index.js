@@ -18,7 +18,7 @@ const Details = ({ navigation, addToCart }) => {
         <Image
           style={styles.image}
           source={{ uri: product.image }}
-          resize="scale"
+          resizeMethod="scale"
           resizeMode="contain"
         />
         <View style={styles.containerInfo}>

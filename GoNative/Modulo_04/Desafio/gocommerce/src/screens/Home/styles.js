@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
   btnCategory: {
     flex: 1,
     marginHorizontal: metrics.baseMargin * 2,
-    paddingVertical: metrics.basePadding,
     alignSelf: 'stretch',
     justifyContent: 'center',
     alignItems: 'center',
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
 
   btnCategorySelected: {
     borderBottomWidth: 5,
-    borderColor: colors.white,
+    borderBottomColor: colors.white,
   },
 
   textCategory: {

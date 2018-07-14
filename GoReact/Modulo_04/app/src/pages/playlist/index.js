@@ -1,158 +1,156 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as PlaylistDetailsAction } from 'store/ducks/playlistDetails';
 
 import ClockIcon from 'assets/images/clock.svg';
 import PlusIcon from 'assets/images/plus.svg';
 
+import Loading from 'components/Loading';
 import { Container, Header, SongList } from './styles';
 
-const Playlist = () => (
-  <Container>
-    <Header>
-      <img
-        src="http://all4band.com/storage/works/LMy4hP5DIw2l4NZTlgrx8LppwjGhUok3yNJ4B8ea.jpeg"
-        alt="Playlist"
-      />
+class Playlist extends Component {
+  static propTypes = {
+    getPlaylistDetailsRequest: PropTypes.func.isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.number,
+      }),
+    }).isRequired,
+    playlistDetails: PropTypes.shape({
+      data: PropTypes.shape({
+        thumbnail: PropTypes.string,
+        title: PropTypes.string,
+        description: PropTypes.string,
+        songs: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.number,
+            title: PropTypes.string,
+            author: PropTypes.string,
+            album: PropTypes.string,
+          }),
+        ),
+      }),
+      loading: PropTypes.bool,
+    }).isRequired,
+  };
 
-      <div>
-        <span>
+  componentDidMount() {
+    this.loadPlaylistDetails();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.loadPlaylistDetails();
+    }
+  }
+
+  loadPlaylistDetails = () => {
+    const { id } = this.props.match.params;
+
+    this.props.getPlaylistDetailsRequest(id);
+  };
+
+  renderDetails = () => {
+    const playlist = this.props.playlistDetails.data;
+
+    return (
+      <Container>
+        <Header>
+          <img src={playlist.thumbnail} alt={playlist.title} />
+
+          <div>
+            <span>
 PLAYLIST
-        </span>
-        <h1>
-Rock Forever
-        </h1>
-        <p>
-13 músicas
-        </p>
+            </span>
+            <h1>
+              {playlist.title}
+            </h1>
+            {!!playlist.songs && (
+            <p>
+              {playlist.songs.length}
+              {' '}
+música (s)
+            </p>
+            )}
 
-        <button type="button">
+            <button type="button">
 PLAY
-        </button>
-      </div>
-    </Header>
+            </button>
+          </div>
+        </Header>
 
-    <SongList cellPadding={0} cellSpacing={0}>
-      <thead>
-        <th />
-        <th>
+        <SongList cellPadding={0} cellSpacing={0}>
+          <thead>
+            <th />
+            <th>
 Título
-        </th>
-        <th>
+            </th>
+            <th>
 Artista
-        </th>
-        <th>
+            </th>
+            <th>
 Álbum
-        </th>
-        <th>
-          <img src={ClockIcon} alt="Duração" />
-        </th>
-      </thead>
+            </th>
+            <th>
+              <img src={ClockIcon} alt="Duração" />
+            </th>
+          </thead>
 
-      <tbody>
-        <tr>
-          <td>
-            <img src={PlusIcon} alt="Adicionar" />
-          </td>
-          <td>
-Papercut
-          </td>
-          <td>
-Linkin Park
-          </td>
-          <td>
-Hybrid Theory
-          </td>
-          <td>
+          <tbody>
+            {!playlist.songs ? (
+              <tr>
+                <td colSpan={5}>
+Nenuma música adicionada
+                </td>
+              </tr>
+            ) : (
+              playlist.songs.map(song => (
+                <tr key={song.id}>
+                  <td>
+                    <img src={PlusIcon} alt="Adicionar" />
+                  </td>
+                  <td>
+                    {song.title}
+                  </td>
+                  <td>
+                    {song.author}
+                  </td>
+                  <td>
+                    {song.album}
+                  </td>
+                  <td>
 3:26
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <img src={PlusIcon} alt="Adicionar" />
-          </td>
-          <td>
-Papercut
-          </td>
-          <td>
-Linkin Park
-          </td>
-          <td>
-Hybrid Theory
-          </td>
-          <td>
-3:26
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <img src={PlusIcon} alt="Adicionar" />
-          </td>
-          <td>
-Papercut
-          </td>
-          <td>
-Linkin Park
-          </td>
-          <td>
-Hybrid Theory
-          </td>
-          <td>
-3:26
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <img src={PlusIcon} alt="Adicionar" />
-          </td>
-          <td>
-Papercut
-          </td>
-          <td>
-Linkin Park
-          </td>
-          <td>
-Hybrid Theory
-          </td>
-          <td>
-3:26
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <img src={PlusIcon} alt="Adicionar" />
-          </td>
-          <td>
-Papercut
-          </td>
-          <td>
-Linkin Park
-          </td>
-          <td>
-Hybrid Theory
-          </td>
-          <td>
-3:26
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <img src={PlusIcon} alt="Adicionar" />
-          </td>
-          <td>
-Papercut
-          </td>
-          <td>
-Linkin Park
-          </td>
-          <td>
-Hybrid Theory
-          </td>
-          <td>
-3:26
-          </td>
-        </tr>
-      </tbody>
-    </SongList>
-  </Container>
-);
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </SongList>
+      </Container>
+    );
+  };
 
-export default Playlist;
+  render() {
+    return this.props.playlistDetails.loading ? (
+      <Container loading>
+        <Loading />
+      </Container>
+    ) : (
+      this.renderDetails()
+    );
+  }
+}
+
+const mapStateToProps = ({ playlistDetails }) => ({
+  playlistDetails,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(PlaylistDetailsAction, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Playlist);

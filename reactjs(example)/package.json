@@ -1,0 +1,51 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^1.4.3",
+    "@material-ui/icons": "^2.0.1",
+    "axios": "^0.18.0",
+    "color": "^3.0.0",
+    "eslint-import-resolver-babel-plugin-root-import": "^1.1.1",
+    "font-awesome": "^4.7.0",
+    "formik": "^1.0.2",
+    "js-cookie": "^2.2.0",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.2",
+    "prop-types": "^15.6.2",
+    "query-string": "^6.1.0",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-input-mask": "^2.0.3",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.4",
+    "react-toastify": "^4.1.0",
+    "reactotron-react-js": "^2.0.0",
+    "reactotron-redux": "^2.0.0",
+    "reactotron-redux-saga": "^2.0.0",
+    "redux": "^4.0.0",
+    "redux-saga": "^0.16.0",
+    "reduxsauce": "^1.0.0",
+    "styled-components": "^3.4.2",
+    "yup": "^0.26.2"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "babel-plugin-root-import": "^6.1.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.10.0",
+    "prettier-eslint": "^8.8.2",
+    "react-app-rewired": "^1.5.2"
+  }
+}

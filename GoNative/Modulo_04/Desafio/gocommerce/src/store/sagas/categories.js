@@ -11,6 +11,7 @@ function* fetch() {
 
     yield put(CategoriesActions.fetchCategoriesSuccess(data));
   } catch (err) {
+    console.log(err.message);
     yield put(ToastActions.toastfyError('Não foi possível importar as categorias'));
   }
 }

@@ -38,6 +38,7 @@ class Main extends Component {
   }
 
   render() {
+    console.log(this.props.albums.data);
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />

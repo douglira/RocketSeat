@@ -7,7 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "json-server": "^0.12.2",
     "lodash": "^4.17.10",
     "prop-types": "^15.6.1",
